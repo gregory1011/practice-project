@@ -3,6 +3,7 @@ package com.app.entity;
 import com.app.entity.common.BaseEntity;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "invoices")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Invoice extends BaseEntity {
 
     private String invoiceNo;

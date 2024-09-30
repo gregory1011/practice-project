@@ -2,6 +2,7 @@ package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
 import com.app.enums.CompanyStatus;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "companies")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Company extends BaseEntity {
 
     @Column(unique = true, nullable = false)

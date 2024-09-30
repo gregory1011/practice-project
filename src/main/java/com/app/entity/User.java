@@ -1,6 +1,7 @@
 package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseEntity {
 
     @Column(unique = true, nullable = false)
