@@ -1,6 +1,6 @@
 package com.app.entity;
 
-import com.cydeo.entity.common.BaseEntity;
+import com.app.entity.common.BaseEntity;
 
 import javax.persistence.Entity;
 
