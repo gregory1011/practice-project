@@ -1,9 +1,9 @@
 package com.app.service;
 
-import com.app.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.app.dto.UserDto;
+
 
 public interface UserService {
 
-    User findByUsername(String username);
+    UserDto findByUsername(String username);
 }
