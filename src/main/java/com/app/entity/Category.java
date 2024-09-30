@@ -20,6 +20,6 @@ public class Category extends BaseEntity {
 
     private String description;
     @ManyToOne()
-    @JoinColumn(name = "categories")
+//    @JoinColumn(name = "categories")
     private Company company;
 }
