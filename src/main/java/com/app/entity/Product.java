@@ -22,6 +22,5 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProductUnit productUnit;
     @ManyToOne()
-//    @JoinColumn(name = "products")
     private Category category;
 }

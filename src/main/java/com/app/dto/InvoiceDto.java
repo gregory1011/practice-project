@@ -25,7 +25,7 @@ public class InvoiceDto {
     private LocalDate date;
     private CompanyDto company;
     private ClientVendorDto clientVendor;
-    BigDecimal price;
-    BigDecimal tax;
-    BigDecimal total;
+    private BigDecimal price;
+    private BigDecimal tax;
+    private BigDecimal total;
 }
