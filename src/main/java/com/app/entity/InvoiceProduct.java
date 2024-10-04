@@ -1,12 +1,10 @@
 package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -14,6 +12,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "invoice_products")
 @NoArgsConstructor
@@ -25,8 +24,10 @@ public class InvoiceProduct extends BaseEntity {
     private int tax;
     private BigDecimal profitLoss;
     private int remainingQuantity;
-    @ManyToOne()
-    private Invoice invoice;
-    @ManyToOne()
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Invoice invoice;
 }
