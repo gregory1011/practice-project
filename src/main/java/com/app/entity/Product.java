@@ -21,6 +21,7 @@ public class Product extends BaseEntity {
     private int lowLimitAlert;
     @Enumerated(EnumType.STRING)
     private ProductUnit productUnit;
-    @ManyToOne()
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 }
