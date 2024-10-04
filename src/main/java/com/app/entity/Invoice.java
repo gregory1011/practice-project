@@ -3,16 +3,14 @@ package com.app.entity;
 import com.app.entity.common.BaseEntity;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "invoices")
 @NoArgsConstructor
@@ -26,9 +24,8 @@ public class Invoice extends BaseEntity {
     private InvoiceType invoiceType;
     private LocalDate date;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientVendor clientVendor;
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
-
 }

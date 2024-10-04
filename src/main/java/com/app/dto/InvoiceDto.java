@@ -21,7 +21,7 @@ public class InvoiceDto {
     private String invoiceNo;
     private InvoiceStatus invoiceStatus;
     private InvoiceType invoiceType;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "MM-dd--yyyy")
     private LocalDate date;
     private CompanyDto company;
     private ClientVendorDto clientVendor;
