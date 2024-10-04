@@ -3,10 +3,7 @@ package com.app.entity;
 import com.app.entity.common.BaseEntity;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 @Getter
@@ -19,7 +16,6 @@ import javax.persistence.Table;
 public class Category extends BaseEntity {
 
     private String description;
-    @ManyToOne()
-//    @JoinColumn(name = "categories")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 }

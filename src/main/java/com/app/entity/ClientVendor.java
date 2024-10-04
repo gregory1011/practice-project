@@ -23,8 +23,8 @@ public class ClientVendor extends BaseEntity {
     private String website;
     @Enumerated(EnumType.STRING)
     private ClientVendorType clientVendorType;
-    @OneToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     private Address address;
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 }

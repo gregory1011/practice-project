@@ -23,6 +23,6 @@ public class Company extends BaseEntity {
     private String website;
     @Enumerated(EnumType.STRING)
     private CompanyStatus companyStatus;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Address address;
 }
