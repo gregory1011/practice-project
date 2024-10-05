@@ -27,9 +27,9 @@ public class User extends BaseEntity {
     private String phone;
     private boolean enabled;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 }
