@@ -5,6 +5,7 @@ import com.app.dto.InvoiceProductDto;
 import com.app.entity.InvoiceProduct;
 import com.app.enums.InvoiceType;
 import com.app.repository.InvoiceProductRepository;
+import com.app.repository.UserRepository;
 import com.app.service.InvoiceProductService;
 import com.app.util.MapperUtil;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,12 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     private final InvoiceProductRepository productRepository;
     private final MapperUtil mapperUtil;
+    private final UserRepository userRepository;
 
-    public InvoiceProductServiceImpl(InvoiceProductRepository invoiceProductRepository, MapperUtil mapperUtil) {
+    public InvoiceProductServiceImpl(InvoiceProductRepository invoiceProductRepository, MapperUtil mapperUtil, UserRepository userRepository) {
         this.productRepository = invoiceProductRepository;
         this.mapperUtil = mapperUtil;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -40,7 +43,6 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public List<InvoiceProductDto> listAllInvoiceProductsByInvoiceType(InvoiceType invoiceType) {
-
         List<InvoiceProduct> list = productRepository.getAllByInvoice_InvoiceType(invoiceType);
 
         return list.stream().map(each-> mapperUtil.convert(each, new InvoiceProductDto())).collect(Collectors.toList());
@@ -51,6 +53,13 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
         List<InvoiceProduct> list = productRepository.listAllInvoiceProductsByInvoiceTypePurchase();
         return list.stream().map(each-> mapperUtil.convert(each, new InvoiceProductDto())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InvoiceProductDto> listAllInvoiceByInvoiceTypeOrderByInvoiceNoDes(InvoiceType invoiceType) {
+
+
+        return List.of();
     }
 
 

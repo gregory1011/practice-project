@@ -20,6 +20,8 @@ public interface InvoiceProductService {
 
     List<InvoiceProductDto> listAllInvoiceProductsByInvoiceTypePurchase();
 
+    List<InvoiceProductDto> listAllInvoiceByInvoiceTypeOrderByInvoiceNoDes(InvoiceType invoiceType);
+
 //    @Query("select ip from InvoiceProduct ip join Invoice i on ip.invoice.id = i.id where i.invoiceType='Purchase'")
 //    List<InvoiceProductDto> findAllProductsByInvoiceTypePurchase();
 
