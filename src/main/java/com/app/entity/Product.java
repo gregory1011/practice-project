@@ -7,13 +7,8 @@ import lombok.*;
 import javax.persistence.*;
 
 
-@Getter
-@Setter
-@ToString
 @Entity
 @Table(name = "products")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Product extends BaseEntity {
 
     private String name;
