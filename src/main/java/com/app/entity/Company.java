@@ -9,12 +9,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
+
 @Entity
 @Table(name = "companies")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Company extends BaseEntity {
 
     @Column(unique = true, nullable = false)

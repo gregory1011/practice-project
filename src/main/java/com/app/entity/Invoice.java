@@ -8,13 +8,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@ToString
 @Entity
 @Table(name = "invoices")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Invoice extends BaseEntity {
 
     private String invoiceNo;
