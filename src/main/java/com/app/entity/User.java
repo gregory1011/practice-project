@@ -9,12 +9,8 @@ import lombok.Setter;
 import javax.persistence.*;
 
 
-@Getter
-@Setter
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
-@AllArgsConstructor
 public class User extends BaseEntity {
 
     @Column(unique = true, nullable = false)
