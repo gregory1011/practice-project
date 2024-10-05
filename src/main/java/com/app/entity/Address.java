@@ -10,12 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 
-@Getter
-@Setter
+
 @Entity
 @Table(name = "addresses")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Address extends BaseEntity {
 
     private String addressLine1;

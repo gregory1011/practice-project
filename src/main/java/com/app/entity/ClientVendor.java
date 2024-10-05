@@ -10,12 +10,8 @@ import lombok.Setter;
 import javax.persistence.*;
 
 
-@Getter
-@Setter
 @Entity
 @Table(name = "clients_vendors")
-@NoArgsConstructor
-@AllArgsConstructor
 public class ClientVendor extends BaseEntity {
 
     private String clientVendorName;
