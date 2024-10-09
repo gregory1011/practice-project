@@ -2,8 +2,6 @@ package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
 import com.app.enums.ProductUnit;
-import lombok.*;
-
 import javax.persistence.*;
 
 
