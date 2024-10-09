@@ -2,9 +2,7 @@ package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
 import lombok.*;
-
 import javax.persistence.*;
-
 
 
 @Entity

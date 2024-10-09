@@ -3,8 +3,6 @@ package com.app.entity;
 import com.app.entity.common.BaseEntity;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
-import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 

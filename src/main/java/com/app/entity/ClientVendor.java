@@ -2,11 +2,6 @@ package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
 import com.app.enums.ClientVendorType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 
 
