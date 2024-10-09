@@ -2,9 +2,14 @@ package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
 import com.app.enums.CompanyStatus;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 
+@Getter
+@Setter
 @Entity
 @Table(name = "companies")
 public class Company extends BaseEntity {
