@@ -1,9 +1,13 @@
 package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
-
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
