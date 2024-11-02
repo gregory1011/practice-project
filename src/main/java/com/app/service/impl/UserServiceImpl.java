@@ -4,21 +4,29 @@ import com.app.dto.UserDto;
 import com.app.entity.User;
 import com.app.exceptions.UserNotFoundException;
 import com.app.repository.UserRepository;
+import com.app.service.SecurityService;
 import com.app.service.UserService;
 import com.app.util.MapperUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
-@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final MapperUtil mapperUtil;
+    private final SecurityService securityService;
+
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy SecurityService securityService) {
+        this.userRepository = userRepository;
+        this.mapperUtil = mapperUtil;
+        this.securityService = securityService;
+    }
 
 
     @Override
@@ -36,7 +44,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> listAllUsers() {
         List<User> list = userRepository.findAll();
-        return list.stream().map(each -> mapperUtil.convert(each, new UserDto())).toList();
+        UserDto user = securityService.getLoggedInUser();
+        List<UserDto> users= new ArrayList<>();
+        if(user.getRole().getDescription().equals("Root User")){
+            users= list.stream().filter(each -> each.getRole().getDescription().equals("Admin")).map(each ->mapperUtil.convert(each, new UserDto())).toList();
+        } else if(user.getRole().getDescription().equals("Admin")){
+            users= list.stream().filter(u->u.getCompany().getId().equals(user.getCompany().getId())).map(each ->mapperUtil.convert(each, new UserDto())).toList();
+        }
+        return users;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.app.service.SecurityService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,11 @@ public class SecurityConfig {
 
     private final AuthSuccessHandler authSuccessHandler;
     private final SecurityService securityService;
+
+//    public SecurityConfig(AuthSuccessHandler authSuccessHandler, @Lazy SecurityService securityService) {
+//        this.authSuccessHandler = authSuccessHandler;
+//        this.securityService = securityService;
+//    }
 
 
     @Bean
