@@ -2,7 +2,6 @@ package com.app.converter;
 
 import com.app.dto.RoleDto;
 import com.app.service.RoleService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,7 @@ public class RoleDtoConvertor implements Converter<String, RoleDto> {
 
     private final RoleService roleService;
 
-    public RoleDtoConvertor(@Lazy RoleService roleService) {
+    public RoleDtoConvertor( RoleService roleService) {
         this.roleService = roleService;
     }
 

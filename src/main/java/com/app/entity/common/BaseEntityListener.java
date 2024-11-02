@@ -2,9 +2,9 @@ package com.app.entity.common;
 
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.stereotype.Component;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -17,11 +17,11 @@ public class BaseEntityListener extends AuditingEntityListener {
     @PrePersist
     public void prePersist(BaseEntity baseEntity) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
-        baseEntity.insertDateTime= now;
-        baseEntity.lastUpdateDateTime= now;
+        LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
+        baseEntity.insertDateTime= time;
+        baseEntity.lastUpdateDateTime= time;
 
-        if(authentication != null && authentication.getName().equals("anonymousUser")){
+        if(authentication != null && !authentication.getName().equals("anonymousUser")){
             UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
             baseEntity.insertUserId= principal.getId();
             baseEntity.lastUpdateUserId= principal.getId();

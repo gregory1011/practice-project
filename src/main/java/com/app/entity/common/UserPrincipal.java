@@ -1,6 +1,7 @@
 package com.app.entity.common;
 
 import com.app.entity.User;
+import com.app.enums.CompanyStatus;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,7 +44,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.getCompany().getCompanyStatus().equals(CompanyStatus.ACTIVE);
     }
 
     @Override
@@ -75,4 +76,7 @@ public class UserPrincipal implements UserDetails {
     public String getCompanyTitleForProfile() {
         return this.user.getCompany().getTitle().toUpperCase();
     }
+
+
+
 }
