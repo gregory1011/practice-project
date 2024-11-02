@@ -12,13 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @AllArgsConstructor
 public class CompanyController {
 
-
     private final CompanyService companyService;
-
 
     @GetMapping("/list")
     public String listCompany(Model model) {
-        model.addAttribute("", companyService.listAllCompanies());
+        model.addAttribute("companies", companyService.listAllCompanies());
         return "/company/company-list";
     }
 
