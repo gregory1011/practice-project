@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/category")
 @AllArgsConstructor
-public class UserController {
+public class CategoryController {
 
 
     @GetMapping("/list")
-    public String listUsers(Model model) {
+    public String listAllCategory(Model model) {
 
-        return "/user/user-list";
+
+        return "category/category-list";
     }
+
+
 }

@@ -1,9 +1,7 @@
 package com.app.controller;
 
 import com.app.dto.InvoiceDto;
-import com.app.enums.ClientVendorType;
 import com.app.enums.InvoiceType;
-import com.app.repository.InvoiceProductRepository;
 import com.app.service.ClientVendorService;
 import com.app.service.InvoiceProductService;
 import com.app.service.InvoiceService;

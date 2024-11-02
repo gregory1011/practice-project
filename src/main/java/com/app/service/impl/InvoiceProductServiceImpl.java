@@ -3,11 +3,13 @@ package com.app.service.impl;
 import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
 import com.app.entity.InvoiceProduct;
+import com.app.enums.ClientVendorType;
 import com.app.enums.InvoiceType;
 import com.app.repository.InvoiceProductRepository;
 import com.app.repository.UserRepository;
 import com.app.service.InvoiceProductService;
 import com.app.util.MapperUtil;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +43,10 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         return mapperUtil.convert(item, new InvoiceProductDto());
     }
 
-    @Override
-    public List<InvoiceProductDto> listAllInvoiceProductsByInvoiceType(InvoiceType invoiceType) {
-        List<InvoiceProduct> list = productRepository.getAllByInvoice_InvoiceType(invoiceType);
 
-        return list.stream().map(each-> mapperUtil.convert(each, new InvoiceProductDto())).collect(Collectors.toList());
+    @Override
+    public List<InvoiceProductDto> listAllInvoiceProductsByInvoiceTypeAndLoggedInUserOrderByInvoiceNoDesc(InvoiceType invoiceType) {
+        return List.of();
     }
 
     @Override
@@ -57,7 +58,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public List<InvoiceProductDto> listAllInvoiceByInvoiceTypeOrderByInvoiceNoDes(InvoiceType invoiceType) {
-
+//        SecurityContext
 
         return List.of();
     }

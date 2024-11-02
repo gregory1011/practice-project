@@ -1,5 +1,6 @@
 package com.app.entity;
 
+import com.app.dto.UserDto;
 import com.app.entity.common.BaseEntity;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
@@ -20,6 +21,7 @@ public class Invoice extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ClientVendor clientVendor;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Company company;
 }

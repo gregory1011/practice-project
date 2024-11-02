@@ -1,7 +1,7 @@
 insert into addresses(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
                       address_line1, address_line2, city, state, country, zip_code)
 values ('2024-04-15 00:00:00', 1, false, '2024-04-15 00:00:00', 1,
-        '7925 Jones Branch Dr, #3300', 'Tysons', 'Virginia', 'VA', 'United States', '22102-1234'),
+        '7925 Jones Branch Dr, #3300', 'Tyson', 'Virginia', 'VA', 'United States', '22102-1234'),
        ('2024-04-15 00:00:00', 1, false, '2024-04-15 00:00:00', 1,
         'Future Street', 'Times Square', 'Atlanta', 'Georgia', 'United States', '30310-4321'),
        ('2024-04-15 00:00:00', 1, false, '2024-04-15 00:00:00', 1,
@@ -15,7 +15,7 @@ values ('2024-04-15 00:00:00', 1, false, '2024-04-15 00:00:00', 1,
        ('2024-04-15 00:00:00', 1, false, '2024-04-15 00:00:00', 1,
         'SouthWest Street', 'Puzzle Square', 'Los Angeles', 'California', 'United States', '90002-8989'),
        ('2024-04-15 00:00:00', 1, false, '2024-04-15 00:00:00', 1,
-        'OwerWest Street', 'Android Square', 'Phoneix', 'Arizona', 'United States', '85034-8989');
+        'OwnerWest Street', 'Android Square', 'Phoenix', 'Arizona', 'United States', '85034-8989');
 
 insert into companies(insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id,
                       title, phone, website, address_id, company_status)
@@ -120,7 +120,7 @@ VALUES
 -- COMPANY-2 / Green Tech
 ('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'HP Elite 800G1 Desktop Computer Package', 8, 5, 'PCS', 1),
 ('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, '2021 Apple MacBook Pro', 0, 5, 'PCS', 1),
-('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'Apple iPhone-13', 0, 5, 'PCS', 2),
+('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'Apple iPhone-13', 5, 5, 'PCS', 2),
 ('2023-04-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'SAMSUNG Galaxy S22', 0, 5, 'PCS', 2),
 -- COMPANY-3 / Blue Tech
 ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'Samsung Galaxy S20 (renewed)', 10, 5, 'PCS', 3),
@@ -132,7 +132,7 @@ insert into invoices(insert_date_time, insert_user_id, is_deleted, last_update_d
                      date, invoice_no, invoice_type, invoice_status, client_vendor_id, company_id)
 values
 -- COMPANY-2 / Green Tech
-('2023-04-09 00:00', 2, 'false', '2023-04-09 00:00', 2, '2023-04-09', 'P-001', 'PURCHASE', 'APPROVED', 2, 2),
+('2023-04-09 00:00', 2, 'false', '2023-04-09 00:00', 2, '2023-04-09', 'P-001', 'PURCHASE', 'AWAITING_APPROVAL', 2, 2),
 ('2023-04-10 00:00', 2, 'false', '2023-04-10 00:00', 2, '2023-04-10', 'P-002', 'PURCHASE', 'APPROVED', 3, 2),
 ('2023-04-17 00:00', 2, 'false', '2023-04-17 00:00', 2, '2023-04-17', 'S-001', 'SALES', 'APPROVED', 1, 2),
 ('2023-04-19 00:00', 2, 'false', '2023-04-19 00:00', 2, '2023-04-19', 'S-002', 'SALES', 'AWAITING_APPROVAL', 1, 2),
@@ -169,4 +169,3 @@ values
 ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 1200, 5, 0, 10, 0, 10, 6), --sale AWAITING_APPROVAL after approval total sale (with tax) : 24420 & profit (with tax) : 5280+1540=6820
 ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 1200, 2, 0, 10, 0, 11, 6), --sale AWAITING_APPROVAL after approval total sale (with tax) : 27060 & profit (with tax) : 6820+440=7260
 ('2023-06-15 00:00', 3, 'false', '2023-06-15 00:00', 3, 600, 4, 0, 10, 0, 13, 7); --purchase AWAITING_APPROVAL
-

@@ -2,6 +2,7 @@ package com.app.service;
 
 import com.app.dto.InvoiceProductDto;
 import com.app.entity.InvoiceProduct;
+import com.app.enums.ClientVendorType;
 import com.app.enums.InvoiceType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,11 +13,9 @@ public interface InvoiceProductService {
 
 
     InvoiceProductDto findInvoiceProductById(Long id);
-//    InvoiceProductDto getAllByInvoiceType(InvoiceType invoiceType);
-
     InvoiceProductDto findInvoiceProductByInvoiceId(Long id);
 
-    List<InvoiceProductDto> listAllInvoiceProductsByInvoiceType(InvoiceType invoiceType);
+    List<InvoiceProductDto> listAllInvoiceProductsByInvoiceTypeAndLoggedInUserOrderByInvoiceNoDesc(InvoiceType invoiceType);
 
     List<InvoiceProductDto> listAllInvoiceProductsByInvoiceTypePurchase();
 

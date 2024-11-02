@@ -8,14 +8,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/reports")
 @AllArgsConstructor
-public class UserController {
+public class ReportController {
 
 
-    @GetMapping("/list")
-    public String listUsers(Model model) {
+    @GetMapping("/profitLossData")
+    public String listProfitLossData(Model model) {
 
-        return "/user/user-list";
+        return "/report/profit-loss-report";
+    }
+
+    @GetMapping("/stockData")
+    public String listStockData(Model model) {
+
+        return "/report/stock-report";
     }
 }
