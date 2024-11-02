@@ -1,11 +1,14 @@
 package com.app.service.impl;
 
 
+import com.app.dto.UserDto;
 import com.app.entity.User;
 import com.app.entity.common.UserPrincipal;
 import com.app.repository.UserRepository;
 import com.app.service.SecurityService;
+import com.app.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,12 +18,18 @@ import org.springframework.stereotype.Service;
 public class SecurityServiceImpl implements SecurityService {
 
     private final UserRepository userRepository;
+    public final UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        if (user==null) throw new UsernameNotFoundException("This "+ username +" does not exist");
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new UserPrincipal(user);
+    }
+
+    @Override
+    public UserDto getLoggedInUser() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findByUsername(username);
     }
 
 }

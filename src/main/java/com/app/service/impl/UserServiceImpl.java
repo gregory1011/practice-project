@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+        User user = userRepository.findByUsername(username).orElseThrow(()-> new UserNotFoundException(username));
         return mapperUtil.convert(user, new UserDto());
     }
 
