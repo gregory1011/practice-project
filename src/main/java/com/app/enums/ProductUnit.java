@@ -11,9 +11,11 @@ public enum ProductUnit {
     FEET("Feet");
 
     private final String value;
+
     ProductUnit(String value) {
         this.value = value;
     }
+
     public String getValue() {
         return value;
     }

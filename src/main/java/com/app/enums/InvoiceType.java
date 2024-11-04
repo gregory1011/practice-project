@@ -9,6 +9,7 @@ public enum InvoiceType {
     private InvoiceType(String value) {
         this.value = value;
     }
+
     public String getValue() {
         return value;
     }
