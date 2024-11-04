@@ -1,11 +1,10 @@
 package com.app.entity;
 
 import com.app.entity.common.BaseEntity;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @Entity
@@ -18,9 +17,9 @@ public class InvoiceProduct extends BaseEntity {
     private BigDecimal profitLoss;
     private int remainingQuantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Invoice invoice;
 }

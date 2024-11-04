@@ -11,6 +11,7 @@ public enum InvoiceStatus {
     InvoiceStatus(String value) {
         this.value = value;
     }
+
     //get() method to implement later in our code
     public String getValue() {
         return value;
