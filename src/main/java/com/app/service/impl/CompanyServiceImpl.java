@@ -3,8 +3,10 @@ package com.app.service.impl;
 
 import com.app.dto.CompanyDto;
 import com.app.dto.UserDto;
+import com.app.entity.Address;
 import com.app.entity.Company;
 import com.app.entity.User;
+import com.app.enums.CompanyStatus;
 import com.app.repository.CompanyRepository;
 import com.app.repository.UserRepository;
 import com.app.service.CompanyService;
@@ -56,6 +58,41 @@ public class CompanyServiceImpl implements CompanyService {
             companies= list.stream().filter(each -> each.getTitle().equals(user.getCompany().getTitle())).map(each -> mapperUtil.convert(each, new CompanyDto())).toList();
         }
         return companies;
+    }
+
+    @Override
+    public void saveCompany(CompanyDto dto) {
+//        List<String> titles = companyRepository.findAll().stream().map(Company::getTitle).toList();
+//        if(titles.contains(dto.getTitle())){
+//            throw new RuntimeException("Title already exists");
+//        }
+        dto.setCompanyStatus(CompanyStatus.PASSIVE);
+        Company company = mapperUtil.convert(dto, new Company());
+        companyRepository.save(company);
+    }
+
+    @Override
+    public void activateCompany(Long id) {
+        Company company = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Company not found"));
+        company.setCompanyStatus(CompanyStatus.ACTIVE);
+        companyRepository.save(company);
+    }
+
+    @Override
+    public void deactivateCompany(Long id) {
+        Company company = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Company not found"));
+        company.setCompanyStatus(CompanyStatus.PASSIVE);
+        companyRepository.save(company);
+    }
+
+    @Override
+    public void updateCompany(Long id, CompanyDto companyDto) {
+        Company company = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Company not found"));
+        company.setPhone(companyDto.getPhone());
+        company.setTitle(companyDto.getTitle());
+        company.setWebsite(companyDto.getWebsite());
+        company.setAddress(mapperUtil.convert(companyDto.getAddress(), new Address()));
+        companyRepository.save(company);
     }
 
 
