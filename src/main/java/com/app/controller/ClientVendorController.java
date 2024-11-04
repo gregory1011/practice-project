@@ -19,7 +19,6 @@ public class ClientVendorController {
     @GetMapping("/list")
     public String listClientVendor(Model model) {
 
-
         return "clientVendor/clientVendor-list";
     }
 

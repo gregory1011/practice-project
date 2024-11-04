@@ -10,6 +10,6 @@ import javax.persistence.*;
 public class Category extends BaseEntity {
 
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Company company;
 }
