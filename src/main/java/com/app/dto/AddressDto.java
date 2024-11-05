@@ -4,6 +4,7 @@ package com.app.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -36,7 +37,7 @@ public class AddressDto {
     @Size(min= 2, max = 50, message = "Country should have 2-50 characters long.")
     private String country;
 
-    @NotBlank(message = "State is a required field.")
+    @NotBlank(message = "Zip Code is a required field.")
     @Pattern(regexp = "^\\d{5}(?:-\\d{4})?$",  message = "Zipcode should have a valid form 'XXXXX' or 'XXXXX-XXXX'.")
     private String zipCode;
 
