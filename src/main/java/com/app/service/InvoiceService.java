@@ -12,4 +12,5 @@ public interface InvoiceService {
     String getLastInvoiceId(InvoiceType invoiceType);
     void saveSaleInvoice(InvoiceDto invoiceDto);
     void savePurchaseInvoice(InvoiceDto invoiceDto);
+    List<InvoiceDto> listAllInvoiceByClientVendorId(Long id);
 }
