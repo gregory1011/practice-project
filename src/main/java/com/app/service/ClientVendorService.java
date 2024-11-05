@@ -8,6 +8,9 @@ import java.util.List;
 public interface ClientVendorService {
 
     List<ClientVendorDto> listAllClientVendors();
-    List<ClientVendorDto> listClientVendorsOrderByName();
     List<ClientVendorDto> listClientVendorsByClientVendorType(ClientVendorType clientVendorType);
+    void saveClientVendor(ClientVendorDto clientVendorDto);
+    void deleteClientVendor(Long id);
+    ClientVendorDto getClientVendorById(Long id);
+    void updateClientVendor(Long id, ClientVendorDto clientVendor);
 }
