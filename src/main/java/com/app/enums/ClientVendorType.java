@@ -1,5 +1,8 @@
 package com.app.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ClientVendorType {
 
     VENDOR("Vendor"), CLIENT("Client");
@@ -8,10 +11,6 @@ public enum ClientVendorType {
 
     ClientVendorType(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 
 }
