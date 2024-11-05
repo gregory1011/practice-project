@@ -12,4 +12,5 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     Invoice findFirstByInvoiceTypeOrderByIdDesc(InvoiceType invoiceType);
     List<Invoice> findAllByInvoiceType(InvoiceType invoiceType);
+    List<Invoice> findAllByClientVendor_id(Long id);
 }
