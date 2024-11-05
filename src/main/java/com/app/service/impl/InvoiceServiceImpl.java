@@ -1,14 +1,11 @@
 package com.app.service.impl;
 
 import com.app.dto.InvoiceDto;
-import com.app.dto.InvoiceProductDto;
 import com.app.entity.Invoice;
-import com.app.entity.InvoiceProduct;
-import com.app.entity.User;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
-import com.app.repository.InvoiceProductRepository;
 import com.app.repository.InvoiceRepository;
+import com.app.service.ClientVendorService;
 import com.app.service.InvoiceService;
 import com.app.util.MapperUtil;
 import lombok.AllArgsConstructor;
@@ -18,7 +15,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -28,6 +24,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final MapperUtil mapperUtil;
     private final InvoiceRepository invoiceRepository;
+    private final ClientVendorService clientVendorService;
 
 
     @Override
@@ -76,6 +73,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceDto.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
         invoiceDto.setDate(LocalDate.now());
         invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
+    }
+
+    @Override
+    public List<InvoiceDto> listAllInvoiceByClientVendorId(Long id) {
+        List<Invoice> list = invoiceRepository.findAllByClientVendor_id(id);
+        return list.stream().map(each -> mapperUtil.convert(each, new InvoiceDto())).collect(Collectors.toList());
     }
 
 }
