@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class RoleDtoConvertor implements Converter<String, RoleDto> {
+public class RoleDtoConverter implements Converter<String, RoleDto> {
 
     private final RoleService roleService;
 
