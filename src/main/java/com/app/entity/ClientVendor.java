@@ -4,12 +4,14 @@ import com.app.entity.common.BaseEntity;
 import com.app.enums.ClientVendorType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
 @Entity(name = "clients_vendors")
+@Where(clause = "is_deleted=false")
 public class ClientVendor extends BaseEntity {
 
     private String clientVendorName;
