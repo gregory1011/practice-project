@@ -8,10 +8,10 @@ import com.app.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
@@ -37,10 +37,43 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String saveUser(@ModelAttribute("newUser") UserDto newUser, Model model) {
-        model.addAttribute("userRoles", roleService.listAllRoles());
-        model.addAttribute("companies", companyService.listAllCompanies());
+    public String saveUser(@Valid @ModelAttribute("newUser") UserDto newUser,BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("userRoles", roleService.listAllRoles());
+            model.addAttribute("companies", companyService.listAllCompanies());
+            return "redirect:/users/create";
+        }
         userService.saveUser(newUser);
         return "redirect:/users/list";
     }
+
+    @GetMapping("/update/{id}")
+    public String updateUser(@PathVariable("id")Long id, Model model) {
+
+        model.addAttribute("user", userService.listById(id));
+        model.addAttribute("userRoles", roleService.listAllRoles());
+        model.addAttribute("companies", companyService.listAllCompanies());
+        return "/user/user-update";
+    }
+
+    @PostMapping("/update/{id}")
+    public String postUser(@Valid @PathVariable("id")Long id, @ModelAttribute("user")UserDto user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", userService.listById(id));
+            model.addAttribute("userRoles", roleService.listAllRoles());
+            model.addAttribute("companies", companyService.listAllCompanies());
+            return "redirect:/users/update/" + id;
+        }
+        userService.updateUser(id, user);
+        return "redirect:/users/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable("id")Long id, Model model) {
+        model.addAttribute("user", userService.listById(id));
+        return "redirect:/users/list";
+    }
+
+
+
 }
