@@ -9,8 +9,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "clients_vendors")
+@Entity(name = "clients_vendors")
 public class ClientVendor extends BaseEntity {
 
     private String clientVendorName;
