@@ -2,18 +2,15 @@ package com.app.converter;
 
 import com.app.dto.RoleDto;
 import com.app.service.RoleService;
+import lombok.AllArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class RoleDtoConvertor implements Converter<String, RoleDto> {
 
     private final RoleService roleService;
-
-    public RoleDtoConvertor( RoleService roleService) {
-        this.roleService = roleService;
-    }
-
 
     @Override
     public RoleDto convert(String source) {
