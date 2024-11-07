@@ -1,11 +1,11 @@
 package com.app.repository;
 
-import com.app.entity.ClientVendor;
+import com.app.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ClientVendorRepository extends JpaRepository<ClientVendor, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
 }

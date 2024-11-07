@@ -29,7 +29,7 @@ public class ClientVendorController {
         List<ClientVendorDto> clientVendorDtoList = clientVendorService.listAllClientVendors();
         for (ClientVendorDto dto : clientVendorDtoList) {
             boolean hasInvoice= !invoiceService.listAllInvoiceByClientVendorId(dto.getId()).isEmpty();
-            dto.setHasInvoice(true);
+            dto.setHasInvoice(hasInvoice);
         }
         model.addAttribute("clientVendors", clientVendorDtoList);
         return "clientVendor/clientVendor-list";

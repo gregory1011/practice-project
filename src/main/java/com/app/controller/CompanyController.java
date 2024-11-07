@@ -1,7 +1,6 @@
 package com.app.controller;
 
 import com.app.dto.CompanyDto;
-import com.app.enums.CompanyStatus;
 import com.app.service.CompanyService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/companies")
@@ -63,6 +61,7 @@ public class CompanyController {
         model.addAttribute("company", companyService.getCompanyById(id));
         return "/company/company-update";
     }
+
     @PostMapping("/update/{id}")
     public String updateCompany(@Valid @PathVariable("id") Long id, @ModelAttribute("company") CompanyDto companyDto) {
         companyService.updateCompany(id, companyDto);

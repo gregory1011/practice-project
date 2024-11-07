@@ -62,10 +62,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void saveCompany(CompanyDto dto) {
-//        List<String> titles = companyRepository.findAll().stream().map(Company::getTitle).toList();
-//        if(titles.contains(dto.getTitle())){
-//            throw new RuntimeException("Title already exists");
-//        }
         dto.setCompanyStatus(CompanyStatus.PASSIVE);
         Company company = mapperUtil.convert(dto, new Company());
         companyRepository.save(company);
