@@ -10,8 +10,7 @@ import javax.persistence.Table;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "addresses")
+@Entity(name = "addresses")
 public class Address extends BaseEntity {
 
     private String addressLine1;
