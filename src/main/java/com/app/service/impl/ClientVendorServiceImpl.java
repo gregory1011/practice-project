@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
@@ -35,13 +36,9 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
-    public List<ClientVendorDto> listAllByClientVendorTypeAndCompanyId(ClientVendorType clientVendorType) {
-        Long companyId = securityService.getLoggedInUser().getCompany().getId();
-        return clientVendorRepository.findAll().stream()
-                .filter(m->m.getCompany().getId().equals(companyId))
-                .filter(m->m.getClientVendorType().equals(clientVendorType))
-                .sorted(Comparator.comparing(ClientVendor::getClientVendorName))
-                .map(each->mapperUtil.convert(each, new ClientVendorDto())).toList();
+    public List<ClientVendorDto> listClientVendorsByClientVendorType(ClientVendorType clientVendorType) {
+        List<ClientVendor> list = clientVendorRepository.findAllByClientVendorTypeOrderByClientVendorName(clientVendorType);
+        return list.stream().map(each -> mapperUtil.convert(each,new ClientVendorDto())).toList();
     }
 
     @Override

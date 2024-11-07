@@ -7,6 +7,7 @@ import com.app.repository.UserRepository;
 import com.app.service.SecurityService;
 import com.app.service.UserService;
 import com.app.util.MapperUtil;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -55,18 +56,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(UserDto userDto) {
+
         User user = mapperUtil.convert(userDto, new User());
         user.setEnabled(true);
         userRepository.save(user);
-    }
-
-    @Override
-    public void updateUser(Long id, UserDto user) {
-        User user1 = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found"));
-        User user2 = mapperUtil.convert(user, new User());
-        user2.setId(user1.getId());
-        user2.setEnabled(true);
-        userRepository.save(user2);
     }
 
 

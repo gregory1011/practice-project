@@ -1,75 +1,66 @@
 package com.app.service.impl;
 
+import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
-import com.app.entity.Invoice;
 import com.app.entity.InvoiceProduct;
+import com.app.enums.ClientVendorType;
+import com.app.enums.InvoiceType;
 import com.app.repository.InvoiceProductRepository;
+import com.app.repository.UserRepository;
 import com.app.service.InvoiceProductService;
-import com.app.service.InvoiceService;
 import com.app.util.MapperUtil;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
-
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceProductServiceImpl implements InvoiceProductService {
 
-    private final InvoiceProductRepository invoiceProductRepository;
+    private final InvoiceProductRepository productRepository;
     private final MapperUtil mapperUtil;
-    private final InvoiceService invoiceService;
+    private final UserRepository userRepository;
 
-    public InvoiceProductServiceImpl(InvoiceProductRepository invoiceProductRepository, MapperUtil mapperUtil,@Lazy InvoiceService invoiceService) {
-        this.invoiceProductRepository = invoiceProductRepository;
+    public InvoiceProductServiceImpl(InvoiceProductRepository invoiceProductRepository, MapperUtil mapperUtil, UserRepository userRepository) {
+        this.productRepository = invoiceProductRepository;
         this.mapperUtil = mapperUtil;
-        this.invoiceService = invoiceService;
+        this.userRepository = userRepository;
     }
-
 
     @Override
     public InvoiceProductDto findInvoiceProductById(Long id) {
-        InvoiceProduct invoiceProduct = invoiceProductRepository.findById(id).orElseThrow(RuntimeException::new);
-        return mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
+
+        Optional<InvoiceProduct> invoiceProduct = productRepository.findById(id);
+        if (invoiceProduct.isPresent()) return mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
+        else return null;
     }
 
     @Override
-    public List<InvoiceProductDto> listAllByInvoiceIdAndCalculateTotalPrice(Long id) {
-        return invoiceProductRepository.findAllByInvoiceId(id).stream()
-                .map(each -> {
-                    InvoiceProductDto invoiceProductDto = mapperUtil.convert(each, new InvoiceProductDto());
-                    invoiceProductDto.setTotal(getTotalPriceWithTax(each));
-                    return invoiceProductDto;
-                })
-                .toList();
+    public InvoiceProductDto findInvoiceProductByInvoiceId(Long id) {
+        InvoiceProduct item = productRepository.findById(id).orElse(null);
+        return mapperUtil.convert(item, new InvoiceProductDto());
+    }
+
+
+    @Override
+    public List<InvoiceProductDto> listAllInvoiceProductsByInvoiceTypeAndLoggedInUserOrderByInvoiceNoDesc(InvoiceType invoiceType) {
+        return List.of();
     }
 
     @Override
-    public void saveInvoiceProduct(Long invoiceId, InvoiceProductDto dto) {
-        Invoice invoice = mapperUtil.convert(invoiceService.listInvoiceById(invoiceId), new Invoice());
-        InvoiceProduct invoiceProduct = mapperUtil.convert(dto, new InvoiceProduct());
-        invoiceProduct.setInvoice(invoice);
-        mapperUtil.convert(invoiceProductRepository.save(invoiceProduct), new InvoiceProductDto());
+    public List<InvoiceProductDto> listAllInvoiceProductsByInvoiceTypePurchase() {
+
+        List<InvoiceProduct> list = productRepository.listAllInvoiceProductsByInvoiceTypePurchase();
+        return list.stream().map(each-> mapperUtil.convert(each, new InvoiceProductDto())).collect(Collectors.toList());
     }
 
     @Override
-    public void deleteInvoiceProduct(Long invoiceProductId) {
-        InvoiceProduct invoiceProduct = invoiceProductRepository.findById(invoiceProductId).orElseThrow(RuntimeException::new);
-        invoiceProduct.setIsDeleted(true);
-        invoiceProductRepository.save(invoiceProduct);
-    }
+    public List<InvoiceProductDto> listAllInvoiceByInvoiceTypeOrderByInvoiceNoDes(InvoiceType invoiceType) {
+//        SecurityContext
 
-    @Override
-    public List<InvoiceProductDto> findInvoiceProductByInvoiceId(Long invoiceId) {
-        List<InvoiceProduct> list = invoiceProductRepository.findAllByInvoiceId(invoiceId);
-        return list.stream().map(each->mapperUtil.convert(each, new InvoiceProductDto())).toList();
-    }
-
-    private BigDecimal getTotalPriceWithTax(InvoiceProduct invoiceProduct) {
-        BigDecimal totalPrice= invoiceProduct.getPrice().multiply(BigDecimal.valueOf(invoiceProduct.getQuantity()));
-        BigDecimal totalTax= totalPrice.multiply(BigDecimal.valueOf(invoiceProduct.getTax() / 100d));
-        return totalPrice.add(totalTax);
+        return List.of();
     }
 
 

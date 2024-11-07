@@ -6,7 +6,6 @@ import com.app.enums.InvoiceType;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -22,10 +21,9 @@ public class InvoiceDto {
     private String invoiceNo;
     private InvoiceStatus invoiceStatus;
     private InvoiceType invoiceType;
-    @DateTimeFormat(pattern = "MMMM-dd-yyyy")
+    @DateTimeFormat(pattern = "MM-dd-yyyy")
     private LocalDate date;
     private CompanyDto company;
-    @NotNull(message = "Client/Vendor is a required field.")
     private ClientVendorDto clientVendor;
     private BigDecimal price;
     private BigDecimal tax;
