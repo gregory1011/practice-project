@@ -16,6 +16,6 @@ public class ClientVendorDtoConverter implements Converter<String, ClientVendorD
     @Override
     public ClientVendorDto convert(String source) {
         if (source.isEmpty()) return null;
-        return clientVendorService.getClientVendorById(Long.parseLong(source));
+        return clientVendorService.listClientVendorById(Long.parseLong(source));
     }
 }
