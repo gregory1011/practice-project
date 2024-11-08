@@ -4,13 +4,15 @@ import com.app.entity.common.BaseEntity;
 import com.app.enums.CompanyStatus;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 
 @Getter
 @Setter
-@Entity
-@Table(name = "companies")
+@Entity(name = "companies")
+@Where(clause = "is_deleted=false")
 public class Company extends BaseEntity {
 
     @Column(unique = true)
