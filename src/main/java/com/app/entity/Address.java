@@ -15,15 +15,21 @@ import javax.persistence.Table;
 @Where(clause = "is_deleted=false")
 public class Address extends BaseEntity {
 
+    @Column(nullable = false)
     private String addressLine1;
 
+    @Column(nullable = false)
     private String addressLine2;
 
+    @Column(nullable = false)
     private String city;
 
+    @Column(nullable = false)
     private String state;
 
+    @Column(nullable = false)
     private String country;
 
+    @Column(nullable = false)
     private String zipCode;
 }
