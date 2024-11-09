@@ -18,11 +18,12 @@ public class ClientVendorDto {
 
     private Long id;
 
-    @NotBlank(message = "Company Name is required field.")
-    @Size(min = 2, max = 50, message = "Company Name must be between 2 and 50 characters long.")
+    @NotBlank(message = "Name is required field.")
+    @Size(min = 2, max = 50, message = "Client/Vendor aame must be between 2 and 50 characters long.")
     private String clientVendorName;
 
-    @Pattern(regexp = "^http(s{0,1})://[a-zA-Z0-9/\\-\\.]+.([A-Za-z/] {2,5})[a-zA-Z0-9/\\&\\?\\=\\-\\.\\~\\%]")
+    @NotBlank(message = "Website is required field.")
+    @Pattern(regexp = "^(https?://)?([a-zA-Z0-9.-]+)\\.([a-zA-Z]{2,})(:[0-9]+)?(/[^/]+)*$", message = "enter a valid website format.")
     private String website;
 
     @Pattern(regexp = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$" // +111 (202) 555-0125  +1 (202) 555-0125
