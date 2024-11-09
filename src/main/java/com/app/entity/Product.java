@@ -12,17 +12,18 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "products")
+@Entity(name = "products")
 @Where(clause = "is_deleted=false")
 public class Product extends BaseEntity {
 
+    @Column(nullable = false)
     private String name;
 
     private int quantityInStock;
 
     private int lowLimitAlert;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProductUnit productUnit;
 

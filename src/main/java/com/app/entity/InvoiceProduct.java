@@ -15,15 +15,25 @@ import java.util.List;
 @Where(clause = "is_deleted=false")
 public class InvoiceProduct extends BaseEntity {
 
+    @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
+    @Column(nullable = false)
     private int tax;
+
     private BigDecimal profitLoss;
+
     private int remainingQuantity;
 
+    @JoinColumn(nullable = false)
     @ManyToOne()
     private Product product;
 
+    @JoinColumn(nullable = false)
     @ManyToOne()
     private Invoice invoice;
+
 }

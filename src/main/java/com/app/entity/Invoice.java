@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @Where(clause = "is_deleted=false")
 public class Invoice extends BaseEntity {
 
+    @Column(nullable = false)
     private String invoiceNo;
 
     @Enumerated(EnumType.STRING)
@@ -25,11 +27,14 @@ public class Invoice extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private InvoiceType invoiceType;
 
+    @Column(nullable = false)
     private LocalDate date;
 
+    @JoinColumn(nullable = false)
     @ManyToOne()
     private ClientVendor clientVendor;
 
+    @JoinColumn(nullable = false)
     @ManyToOne()
     private Company company;
 

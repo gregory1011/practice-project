@@ -15,16 +15,20 @@ import javax.persistence.*;
 @Where(clause = "is_deleted=false")
 public class Company extends BaseEntity {
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String phone;
-    
+
+    @Column(nullable = false)
     private String website;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CompanyStatus companyStatus;
 
+    @JoinColumn(nullable = false)
     @OneToOne(cascade ={CascadeType.PERSIST, CascadeType.MERGE})
     private Address address;
 }

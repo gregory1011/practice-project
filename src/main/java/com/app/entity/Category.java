@@ -18,8 +18,10 @@ import java.util.List;
 public class Category extends BaseEntity {
 
 
+    @Column(nullable = false)
     private String description;
 
+    @JoinColumn(nullable = false)
     @ManyToOne()
     private Company company;
 
