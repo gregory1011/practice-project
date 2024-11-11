@@ -37,11 +37,11 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String saveUser(@Valid @ModelAttribute("newUser") UserDto newUser,BindingResult bindingResult, Model model) {
+    public String saveUser(@Valid @ModelAttribute("newUser") UserDto newUser, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("userRoles", roleService.listAllRoles());
             model.addAttribute("companies", companyService.listAllCompanies());
-            return "redirect:/users/create";
+            return "user/user-create";
         }
         userService.saveUser(newUser);
         return "redirect:/users/list";
@@ -49,7 +49,6 @@ public class UserController {
 
     @GetMapping("/update/{id}")
     public String updateUser(@PathVariable("id")Long id, Model model) {
-
         model.addAttribute("user", userService.listById(id));
         model.addAttribute("userRoles", roleService.listAllRoles());
         model.addAttribute("companies", companyService.listAllCompanies());
@@ -59,7 +58,6 @@ public class UserController {
     @PostMapping("/update/{id}")
     public String postUser(@Valid @PathVariable("id")Long id, @ModelAttribute("user")UserDto user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", userService.listById(id));
             model.addAttribute("userRoles", roleService.listAllRoles());
             model.addAttribute("companies", companyService.listAllCompanies());
             return "redirect:/users/update/" + id;
@@ -69,11 +67,9 @@ public class UserController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id")Long id, Model model) {
-        model.addAttribute("user", userService.listById(id));
+    public String deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
         return "redirect:/users/list";
     }
-
-
 
 }
