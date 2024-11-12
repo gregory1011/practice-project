@@ -3,6 +3,7 @@ package com.app.service.impl;
 import com.app.dto.CategoryDto;
 import com.app.dto.CompanyDto;
 import com.app.entity.Category;
+import com.app.exceptions.CategoryNotFoundException;
 import com.app.repository.CategoryRepository;
 import com.app.service.CategoryService;
 import com.app.service.SecurityService;
@@ -45,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(RuntimeException::new);
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
         CategoryDto dto = mapperUtil.convert(category, new CategoryDto());
         dto.setHasProduct(!category.getProduct().isEmpty());
         return dto;
@@ -54,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void updateCategory(Long id, CategoryDto dto) {
         dto.setId(id);
-        Category category = categoryRepository.findById(id).orElseThrow(RuntimeException::new);
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
         category.setDescription(dto.getDescription());
         categoryRepository.save(category);
     }
@@ -66,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(RuntimeException::new);
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
         category.setIsDeleted(true);
         category.setDescription(category.getDescription() + "-"+category.getId());
         categoryRepository.save(category);
