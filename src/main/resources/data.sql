@@ -169,3 +169,20 @@ values
 ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 1200, 5, 0, 10, 0, 10, 6), --sale AWAITING_APPROVAL after approval total sale (with tax) : 24420 & profit (with tax) : 5280+1540=6820
 ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 1200, 2, 0, 10, 0, 11, 6), --sale AWAITING_APPROVAL after approval total sale (with tax) : 27060 & profit (with tax) : 6820+440=7260
 ('2023-06-15 00:00', 3, 'false', '2023-06-15 00:00', 3, 600, 4, 0, 10, 0, 13, 7); --purchase AWAITING_APPROVAL
+
+-- Payment / Green Tech id=2 and Blue Tech id=3
+INSERT INTO payments (insert_date_time, insert_user_id, is_deleted, last_update_date_time, last_update_user_id, month, year, amount, is_paid, company_id)
+VALUES
+                    ('2023-01-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'JANUARY', 2023, 250.00, 'true', 2),
+                    ('2024-01-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'JANUARY', 2024, 250.00, 'true', 2),
+                    ('2023-02-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'FEBRUARY', 2023, 250.00, 'false', 2),
+                    ('2024-02-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'FEBRUARY', 2024, 250.00, 'false', 2),
+                    ('2023-03-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'MARCH', 2023, 250.00, 'true', 2),
+                    ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'APRIL', 2023, 250.00, 'false', 2),
+                    ('2023-03-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'MARCH', 2023, 250.00, 'true', 3),
+                    ('2024-03-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'MARCH', 2024, 250.00, 'true', 3),
+                    ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'APRIL', 2023, 250.00, 'false', 3),
+                    ('2023-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'APRIL', 2023, 250.00, 'false', 3),
+                    ('2024-04-15 00:00', 3, 'false', '2023-04-15 00:00', 3, 'APRIL', 2024, 250.00, 'false', 3),
+                    ('2024-01-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'JANUARY', 2024, 250.00, 'true', 3),
+                    ('2023-02-15 00:00', 2, 'false', '2023-04-15 00:00', 2, 'FEBRUARY', 2023, 250.00, 'false', 3);
