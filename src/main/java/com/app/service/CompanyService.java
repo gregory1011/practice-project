@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface CompanyService {
 
-    CompanyDto getCompanyById(Long id);
-    Long getCompanyIdByLoggedInUser(String companyId);
+    CompanyDto listCompanyById(Long id);
+    CompanyDto getCompanyByLoggedInUser();
     List<CompanyDto> listAllCompanies();
     void saveCompany(CompanyDto newCompany);
     void activateCompany(Long id);
