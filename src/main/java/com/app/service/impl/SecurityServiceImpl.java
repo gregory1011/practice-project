@@ -4,6 +4,7 @@ package com.app.service.impl;
 import com.app.dto.UserDto;
 import com.app.entity.User;
 import com.app.entity.common.UserPrincipal;
+import com.app.exceptions.UserNotFoundException;
 import com.app.repository.UserRepository;
 import com.app.service.SecurityService;
 import com.app.service.UserService;
@@ -22,7 +23,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         return new UserPrincipal(user);
     }
 
