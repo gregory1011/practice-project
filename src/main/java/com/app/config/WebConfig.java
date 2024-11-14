@@ -21,5 +21,4 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addViewController("/salesInvoices/list").setViewName("invoice/sales-invoice-list");
     }
 
-
 }
