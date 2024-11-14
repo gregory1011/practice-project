@@ -65,7 +65,7 @@
                                                         <tbody>
                                                         <tr th:each="payment, iStat : ${payments}">
                                                             <td th:text="${iStat.count}"></td>
-                                                            <td class="text-truncate" th:text="${payment.getMonth().value} +' '+ ${year}"></td>
+                                                            <td class="text-truncate" th:text="${payment.getMonth().name().substring(0,3)} +' '+ ${year}"></td>
                                                             <td class="text-truncate justify-content-center" th:text="'$ '+${payment.getAmount()}"></td>
                                                             <td>
                                                                 <form action="#" method="post">
