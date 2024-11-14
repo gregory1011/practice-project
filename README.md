@@ -1,6 +1,7 @@
 # my project Application
 
-The `Accounting Application` is a Maven-based Spring Boot application, leveraging version `2.7.7` of Spring Boot and Java `17`. It's designed to provide accounting functionalities and integrates with tools and platforms like PostgreSQL, Docker, and AWS.
+The `Practice Project Application` is a Maven-based Spring Boot application, leveraging version `2.7.18` of Spring Boot and Java `17`. 
+It's designed to provide accounting functionalities and integrates with tools and platforms like PostgreSQL, Docker, and AWS.
 
 ## Prerequisites
 
@@ -10,6 +11,7 @@ Before you begin, ensure you have met the following requirements:
 - Maven
 - Docker
 - Access to Postgres (locally or through a service)
+- pgAdmin 4
 
 
 ## Setup & Running the Service
@@ -39,45 +41,29 @@ Follow the steps below to get the _Demo Application_ up and running:
 ## 2. Naming Conventions
 
 - **Classes:**
-    - Start with an uppercase and use CamelCase.
+    - Start with an uppercase and used CamelCase.
     - *Example:* `UserService`
-- **Branching Strategy:**
-    - use jira ticket number and names.
-    - *Example:* `JD2-34 User CRUD Operations`
-- **Commit Messages:**
-    - *Example:* `Adds user list and create`
-- **Pull Request Messages:**
-    - use jira ticket number and names.
-    - *Example:* `JD2-34 User CRUD Operations`
 - **Methods:**
-    - Start with a lowercase and use camelCase.
+    - Start with a lowercase and used camelCase.
     - *Example:* `getUserData()`
 - **Variables:**
-    - Use meaningful names and avoid single-letter names (except for loop indexes).
+    - Used meaningful names and avoid single-letter names.
     - *Example:* `userList`, `accountStatus`
 - **Constants:**
-    - Use uppercase with underscores.
+    - Used uppercase with underscores.
     - *Example:* `MAX_RETRY_COUNT`
-
-## 3. Comments
-
-- Write meaningful comments and avoid obvious comments.
-- Use Javadoc style comments for classes and methods.
-- Comment any code that might appear non-trivial or has business implications.
 
 ## 4. Spring Boot Specifics
 
 - **Property Injection:**
-    - Use constructor injection over field injection for better testability.
+    - Used constructor injection over field injection for better testability.
 - **Exception Handling:**
-    - Use `@ControllerAdvice` and `@ExceptionHandler` to handle exceptions globally.
+    - Used `@ControllerAdvice` and `@ExceptionHandler` to handle exceptions globally.
 
 ## 5. General Guidelines
 
 - **Single Responsibility Principle:**
     - A class should have only one reason to change.
-- **Avoid Magic Numbers:**
-    - Instead of hard coded numbers, use named constants.
 - **Null Safety:**
     - Always check for `null` before using an object or provide default values using `Optional`.
 - **Logging:**
