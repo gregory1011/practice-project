@@ -18,5 +18,4 @@ public class PracticeProjectApplication {
     ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 }
