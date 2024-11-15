@@ -1,7 +1,6 @@
 package com.app.aspect;
 
 import com.app.dto.UserDto;
-import com.app.service.CompanyService;
 import com.app.service.SecurityService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
