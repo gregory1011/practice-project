@@ -19,5 +19,4 @@ public class MapperUtil {
         return modelMapper.map(objectToBeConverted, (Type) convertedObject.getClass());
     }
 
-
 }
