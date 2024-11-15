@@ -2,7 +2,8 @@ package com.app.enums;
 
 public enum InvoiceStatus {
 
-    AWAITING_APPROVAL("Awaiting Approval"), APPROVED("Approved");
+    AWAITING_APPROVAL("Awaiting Approval"),
+    APPROVED("Approved");
 
     //value
     private final String value;
