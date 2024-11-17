@@ -10,6 +10,6 @@ public interface CategoryService {
     void saveCategory(CategoryDto dto);
     CategoryDto getCategoryById(Long id);
     void updateCategory(Long id, CategoryDto dto);
-    boolean isDescriptionExists(String description);
+    boolean isDescriptionExists(CategoryDto dto);
     void deleteById(Long id);
 }
