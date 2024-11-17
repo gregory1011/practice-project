@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -61,8 +62,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public boolean isDescriptionExists(String description) {
-        return categoryRepository.existsAllByDescriptionAndCompanyId(description, securityService.getLoggedInUser().getCompany().getId());
+    public boolean isDescriptionExists(CategoryDto dto) {
+        Category category = categoryRepository.findCategoryByDescriptionAndCompanyId(dto.getDescription(), securityService.getLoggedInUser().getCompany().getId());
+        if (category == null) return false;
+        return category.getDescription().equals(dto.getDescription());
     }
 
     @Override
