@@ -8,7 +8,6 @@ import com.app.repository.UserRepository;
 import com.app.service.SecurityService;
 import com.app.service.UserService;
 import com.app.util.MapperUtil;
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class UserServiceImpl implements UserService {
         List<User> userList;
         if (loggedInUser.getRole().getId() == 1L){ // if is Root user
             userList= userRepository.findAllByRole_id(2L); // retrieve user id= 2 only Admin
-        }else {
+        }else { // retrieve all users by company id
             userList= userRepository.findAllByCompany_id(loggedInUser.getCompany().getId());
         }
         return userList.stream()
@@ -77,20 +76,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(UserDto userDto) {
+    public UserDto saveUser(UserDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = mapperUtil.convert(userDto, new User());
         user.setEnabled(securityService.getLoggedInUser().getCompany().getCompanyStatus().equals(CompanyStatus.ACTIVE));
-        userRepository.save(user);
+        return mapperUtil.convert(userRepository.save(user), new UserDto());
     }
 
     @Override
-    public void updateUser(Long id, UserDto dto) {
-        User saved = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public UserDto updateUser( UserDto dto) {
+        User saved = userRepository.findById(dto.getId()).orElseThrow(UserNotFoundException::new);
         User user = mapperUtil.convert(dto, new User());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEnabled(saved.isEnabled());
-        userRepository.save(user);
+        return mapperUtil.convert(userRepository.save(user), new UserDto());
     }
 
     @Override
@@ -109,7 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean checkIfOnlyAdmin(UserDto dto) {
-        Integer countAdmins = userRepository.countAllByCompany_IdAndRole_Description(dto.getCompany().getId(), "Admin");
+        Integer countAdmins = userRepository.countAllByCompany_IdAndRoleIsAdmin(dto.getCompany().getId());
         return countAdmins == 1;
     }
 
