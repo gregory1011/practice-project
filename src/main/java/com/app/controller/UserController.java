@@ -1,6 +1,5 @@
 package com.app.controller;
 
-
 import com.app.dto.UserDto;
 import com.app.service.CompanyService;
 import com.app.service.RoleService;
@@ -10,8 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
+
 
 @Controller
 @RequestMapping("/users")
@@ -25,7 +24,7 @@ public class UserController {
     @GetMapping("/list")
     public String listUsers(Model model) {
         model.addAttribute("users", userService.listAllUsers());
-        return "/user/user-list";
+        return "user/user-list";
     }
 
     @GetMapping("/create")
@@ -33,11 +32,13 @@ public class UserController {
         model.addAttribute("newUser", new UserDto());
         model.addAttribute("userRoles", roleService.listAllRoles());
         model.addAttribute("companies", companyService.listAllCompanies());
-        return "/user/user-create";
+        return "user/user-create";
     }
 
     @PostMapping("/create")
     public String saveUser(@Valid @ModelAttribute("newUser") UserDto newUser, BindingResult bindingResult, Model model) {
+        boolean isUsernameExist = userService.isUsernameExists(newUser);
+        if(isUsernameExist) bindingResult.rejectValue("username", "err.username","A user with this email already exists. Please try with different email.");
         if (bindingResult.hasErrors()) {
             model.addAttribute("userRoles", roleService.listAllRoles());
             model.addAttribute("companies", companyService.listAllCompanies());
@@ -52,17 +53,19 @@ public class UserController {
         model.addAttribute("user", userService.listById(id));
         model.addAttribute("userRoles", roleService.listAllRoles());
         model.addAttribute("companies", companyService.listAllCompanies());
-        return "/user/user-update";
+        return "user/user-update";
     }
 
     @PostMapping("/update/{id}")
     public String postUser(@Valid @PathVariable("id")Long id, @ModelAttribute("user")UserDto user, BindingResult bindingResult, Model model) {
+        boolean isUsernameExists = userService.isUsernameExists(user);
+        if(isUsernameExists) bindingResult.rejectValue("username", "err.username","A user with this email already exists. Please try with different email.");
         if (bindingResult.hasErrors()) {
             model.addAttribute("userRoles", roleService.listAllRoles());
             model.addAttribute("companies", companyService.listAllCompanies());
-            return "redirect:/users/update/" + id;
+            return "user/user-update";
         }
-        userService.updateUser(id, user);
+        userService.updateUser(user);
         return "redirect:/users/list";
     }
 
