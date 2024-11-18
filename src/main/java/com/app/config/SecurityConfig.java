@@ -1,7 +1,6 @@
 package com.app.config;
 
 import com.app.service.SecurityService;
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -12,17 +11,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
-@AllArgsConstructor
 public class SecurityConfig {
 
     private final AuthSuccessHandler authSuccessHandler;
     private final SecurityService securityService;
 
-//    public SecurityConfig(AuthSuccessHandler authSuccessHandler, @Lazy SecurityService securityService) {
-//        this.authSuccessHandler = authSuccessHandler;
-//        this.securityService = securityService;
-//    }
-
+    public SecurityConfig(@Lazy SecurityService securityService, AuthSuccessHandler authSuccessHandler) {
+        this.authSuccessHandler = authSuccessHandler;
+        this.securityService = securityService;
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
