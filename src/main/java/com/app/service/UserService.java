@@ -10,8 +10,8 @@ public interface UserService {
     UserDto listById(Long id);
     UserDto findByUsername(String username);
     List<UserDto> listAllUsers();
-    void saveUser(UserDto userDto);
-    void updateUser(Long id, UserDto user);
+    UserDto saveUser(UserDto userDto);
+    UserDto updateUser( UserDto user);
     void deleteUser(Long id);
     boolean isUsernameExists(UserDto userDto);
 }
