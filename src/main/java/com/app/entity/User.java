@@ -21,13 +21,10 @@ public class User extends BaseEntity {
 
     private String confirmPassword;
 
-    @Column(nullable = false)
     private String firstname;
 
-    @Column(nullable = false)
     private String lastname;
 
-    @Column(nullable = false)
     private String phone;
 
     private boolean enabled;
