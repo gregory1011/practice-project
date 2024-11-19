@@ -17,17 +17,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public String handleThrowable(Throwable ex, HandlerMethod handlerMethod, Model model){
-//        ex.printStackTrace();
-
-        String message= "Something went wrong!";
+        ex.printStackTrace();
         Optional<DefaultExceptionMessageDto> defaultMessage= getMessageFromAnnotation(handlerMethod.getMethod());
+        String displayMessage= "Something went wrong!";
         if(defaultMessage.isPresent()){
-            message = defaultMessage.get().getMessage();
+            displayMessage = defaultMessage.get().getMessage();
         } else if (ex.getMessage() != null) {
-            message = ex.getMessage();
+            displayMessage = ex.getMessage();
         }
-        model.addAttribute("message", message);
-        return "/error";
+        model.addAttribute("message", defaultMessage);
+        return "error";
     }
 
     private Optional<DefaultExceptionMessageDto> getMessageFromAnnotation(Method method) {
