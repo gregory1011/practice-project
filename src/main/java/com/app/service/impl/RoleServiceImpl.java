@@ -10,9 +10,8 @@ import com.app.service.SecurityService;
 import com.app.util.MapperUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 @AllArgsConstructor
@@ -30,16 +29,17 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleDto> listAllRoles() {
-        List<Role> list = roleRepository.findAll();
         UserDto loggedUser = securityService.getLoggedInUser();
-        List<RoleDto> roles = new ArrayList<>();
         if(loggedUser.getRole().getDescription().equals("Root User")) {
-            roles= list.stream().filter(each -> each.getDescription().equals("Admin")).map(each -> mapperUtil.convert(each, new RoleDto())).toList();
+            return roleRepository.findAll().stream()
+                    .filter(role -> role.getDescription().equals("Admin")) // get all roles= Admin
+                    .map(each -> mapperUtil.convert(each, new RoleDto())).toList();
+        }else {
+            return roleRepository.findAll().stream()
+                    .filter(role -> !role.getDescription().equals("Root User")) // get all roles except Root User
+                    .map(each -> mapperUtil.convert(each, new RoleDto()))
+                    .toList();
         }
-        else if(loggedUser.getRole().getDescription().equals("Admin")) {
-            roles= list.stream().filter(each -> !each.getDescription().equals("Root User")).map(each -> mapperUtil.convert(each, new RoleDto())).toList();
-        }
-        return roles;
     }
 
 }
