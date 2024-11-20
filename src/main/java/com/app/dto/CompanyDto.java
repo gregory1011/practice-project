@@ -10,14 +10,14 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-@ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyDto {
 
     private Long id;
 
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = "Title is a required field.")
     @Size(min = 2, max = 100, message = "Title should be 2-100 characters long.")
     private String title;
 
