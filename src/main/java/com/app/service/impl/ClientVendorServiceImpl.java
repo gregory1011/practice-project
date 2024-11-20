@@ -4,6 +4,7 @@ import com.app.dto.ClientVendorDto;
 import com.app.dto.CompanyDto;
 import com.app.entity.ClientVendor;
 import com.app.enums.ClientVendorType;
+import com.app.exceptions.ClientVendorNotFoundException;
 import com.app.repository.ClientVendorRepository;
 import com.app.service.ClientVendorService;
 import com.app.service.SecurityService;
@@ -56,18 +57,18 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     public void deleteClientVendor(Long id) {
         Optional<ClientVendor> clientVendor= clientVendorRepository.findById(id);
         clientVendor.ifPresent(client -> client.setIsDeleted(true));
-        clientVendorRepository.save(clientVendor.get());
+        clientVendorRepository.save(clientVendor.orElseThrow(ClientVendorNotFoundException::new));
     }
 
     @Override
-    public ClientVendorDto getClientVendorById(Long id) {
-        ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(RuntimeException::new);
+    public ClientVendorDto listClientVendorById(Long id) {
+        ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(ClientVendorNotFoundException::new);
         return mapperUtil.convert(clientVendor,new ClientVendorDto());
     }
 
     @Override
     public void updateClientVendor(Long id, ClientVendorDto dto) {
-        ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(RuntimeException::new);
+        ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(ClientVendorNotFoundException::new);
         ClientVendor convert = mapperUtil.convert(dto, new ClientVendor());
         clientVendor.setAddress(convert.getAddress());
         clientVendor.setClientVendorType(dto.getClientVendorType());
