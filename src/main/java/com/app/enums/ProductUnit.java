@@ -1,5 +1,11 @@
 package com.app.enums;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum ProductUnit {
 
     LBS("Libre"),
@@ -11,13 +17,5 @@ public enum ProductUnit {
     FEET("Feet");
 
     private final String value;
-
-    ProductUnit(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
 
 }
