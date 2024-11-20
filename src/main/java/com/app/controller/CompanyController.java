@@ -1,16 +1,15 @@
 package com.app.controller;
 
 import com.app.dto.CompanyDto;
-import com.app.enums.CompanyStatus;
+import com.app.service.AddressService;
 import com.app.service.CompanyService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.util.List;
+
 
 @Controller
 @RequestMapping("/companies")
@@ -18,29 +17,28 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final AddressService addressService;
 
     @GetMapping("/list")
     public String listCompany(Model model) {
         model.addAttribute("companies", companyService.listAllCompanies());
-        return "/company/company-list";
+        return "company/company-list";
     }
 
     @GetMapping("/create")
     public String createCompany(Model model) {
         model.addAttribute("newCompany", new CompanyDto());
-        return "/company/company-create";
+        model.addAttribute("countries", addressService.listAllCountries());
+        return "company/company-create";
     }
 
     @PostMapping("/create")
     public String createCompany(@Valid @ModelAttribute("newCompany") CompanyDto newCompany, BindingResult bindingResult, Model model) {
-//        List<String> titles = companyService.listAllCompanies().stream().map(CompanyDto::getTitle).toList();
-//        if(titles.contains(newCompany.getTitle())) {
-//                bindingResult.rejectValue("title", "company.title", "Duplicate title");
-////            throw new RuntimeException("Title already exists");
-//        }
-
+        boolean titleExist = companyService.titleExist(newCompany);
+        if (titleExist) bindingResult.rejectValue("title", "err.title", "Title already exist");
         if (bindingResult.hasErrors()) {
-            return "/company/company-create";
+            model.addAttribute("countries", addressService.listAllCountries());
+            return "company/company-create";
         }
         companyService.saveCompany(newCompany);
         return "redirect:/companies/list";
@@ -60,11 +58,18 @@ public class CompanyController {
 
     @GetMapping("/update/{id}")
     public String editCompany(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("company", companyService.getCompanyById(id));
-        return "/company/company-update";
+        model.addAttribute("company", companyService.listCompanyById(id));
+        return "company/company-update";
     }
+
     @PostMapping("/update/{id}")
-    public String updateCompany(@Valid @PathVariable("id") Long id, @ModelAttribute("company") CompanyDto companyDto) {
+    public String updateCompany(@Valid @PathVariable("id") Long id, @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult, Model model) {
+        boolean titleExist = companyService.titleExist(companyDto);
+        if (titleExist) bindingResult.rejectValue("title", "err.title", "Title already exist.");
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("countries", addressService.listAllCountries());
+            return "company/company-update";
+        }
         companyService.updateCompany(id, companyDto);
         return "redirect:/companies/list";
     }
