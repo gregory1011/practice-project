@@ -11,11 +11,11 @@ jobs:
           name: Create a Directory
           command: mkdir -p ~/practice-project
       - restore_cache:
-        - keys:
+          keys:
             - practice-project-dependencies-{{ checksum "pom.xml" }}
       - run:
           name: Build (create JAR file)
-          command: mvn clean package -DskipTest
+          command: mvn clean package -DskipTests
       - save_cache:
           paths:
             -  ~/.m2
@@ -25,7 +25,7 @@ jobs:
           paths:
             - .
   test:
-    machine: true
+#    machine: true
     working_directory: ~/practice-project
     steps:
       - attach_workspace:
