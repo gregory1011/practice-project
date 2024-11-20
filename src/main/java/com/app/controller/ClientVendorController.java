@@ -3,6 +3,7 @@ package com.app.controller;
 
 import com.app.dto.ClientVendorDto;
 import com.app.enums.ClientVendorType;
+import com.app.service.AddressService;
 import com.app.service.ClientVendorService;
 import com.app.service.InvoiceService;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class ClientVendorController {
 
     private final ClientVendorService clientVendorService;
     private final InvoiceService invoiceService;
+    private final AddressService addressService;
 
     @GetMapping("/list")
     public String listClientVendors(Model model) {
@@ -38,14 +40,16 @@ public class ClientVendorController {
     @GetMapping("/create")
     public String createClientVendor(Model model) {
         model.addAttribute("newClientVendor", new ClientVendorDto());
-        model.addAttribute("clientVendorTypes", Arrays.stream(ClientVendorType.values()).toList());
+        model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+        model.addAttribute("countries", addressService.listAllCountries());
         return "clientVendor/clientVendor-create";
     }
 
     @PostMapping("/create")
     public String postClientVendor(@Valid @ModelAttribute("newClientVendor") ClientVendorDto newClientVendor, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("clientVendorTypes", Arrays.stream(ClientVendorType.values()).toList());
+            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+            model.addAttribute("countries", addressService.listAllCountries());
             return "clientVendor/clientVendor-create";
         }
         clientVendorService.saveClientVendor(newClientVendor);
@@ -60,16 +64,19 @@ public class ClientVendorController {
 
     @GetMapping("/update/{id}")
     public String updateClientVendor(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("clientVendor", clientVendorService.getClientVendorById(id));
-        model.addAttribute("clientVendorTypes", ClientVendorType.values());
+        model.addAttribute("clientVendor", clientVendorService.listClientVendorById(id));
+        model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+        model.addAttribute("countries", addressService.listAllCountries());
         return "clientVendor/clientVendor-update";
     }
 
     @PostMapping("/update/{id}")
     public String updClientVendor(@Valid @PathVariable("id")Long id, @ModelAttribute("clientVendor")ClientVendorDto clientVendor, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()) {
-            model.addAttribute("clientVendor", clientVendorService.getClientVendorById(id));
-            model.addAttribute("clientVendorTypes", ClientVendorType.values());
+            model.addAttribute("clientVendor", clientVendorService.listClientVendorById(id));
+            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+            model.addAttribute("countries", addressService.listAllCountries());
+            return "clientVendor/clientVendor-update";
         }
         clientVendorService.updateClientVendor(id, clientVendor);
         return "redirect:/clientVendors/list";
