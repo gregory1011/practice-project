@@ -7,9 +7,9 @@ import java.util.List;
 public interface CategoryService {
 
     List<CategoryDto> listAllCategories();
-    void saveCategory(CategoryDto dto);
+    CategoryDto saveCategory(CategoryDto dto);
     CategoryDto getCategoryById(Long id);
-    void updateCategory(Long id, CategoryDto dto);
+    CategoryDto updateCategory(Long id, CategoryDto dto);
     boolean isDescriptionExists(CategoryDto dto);
     void deleteById(Long id);
 }
