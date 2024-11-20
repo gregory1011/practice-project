@@ -1,0 +1,67 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk
+    working_directory: ~/practice-project
+    steps:
+      - checkout
+      - run:
+          name: Create a Directory
+          command: mkdir -p ~/practice-project
+      - restore_cache:
+        - keys:
+            - practice-project-dependencies-{{ checksum "pom.xml" }}
+      - run:
+          name: Build (create JAR file)
+          command: mvn clean package -DskipTest
+      - save_cache:
+          paths:
+            -  ~/.m2
+          key: practice-project-dependencies-{{ checksum "pom.xml" }}
+      - persist_to_workspace:
+          root: ~/practice-project
+          paths:
+            - .
+  test:
+    machine: true
+    working_directory: ~/practice-project
+    steps:
+      - attach_workspace:
+          at: ~/practice-project
+      - run:
+          name: Docker Container that runs Postgresql in it
+          comman: docker run --name test-db -p 5432:5432 -e POS
+      - run:
+          name: Run Integration Test and Unit Tests
+          command:
+            mvn test -Dskip.unit.tests=false -Dskip.integration.tests=false \
+              -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
+              -Dspring.datasource.username=postgres \
+              -Dspring.datasource.password=1234
+  docker-image-create-and-push:
+    steps:
+      -
+  deploy:
+    machine: true
+    steps:
+      - run:
+          name: Connect to EC2 server and run image
+          command: |
+
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - docker-image-create-and-push:
+          requires:
+            - test
+      - deploy:
+          requires:
+            - docker-image-create-and-push
