@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
+
 
 @Service
 @AllArgsConstructor
@@ -39,10 +39,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void saveCategory(CategoryDto dto) {
+    public CategoryDto saveCategory(CategoryDto dto) {
         CompanyDto company = securityService.getLoggedInUser().getCompany();
         dto.setCompany(company);
-        categoryRepository.save(mapperUtil.convert(dto, new Category()));
+        Category category = mapperUtil.convert(dto, new Category());
+        categoryRepository.save(category);
+        return mapperUtil.convert(category, new CategoryDto());
     }
 
     @Override
@@ -54,11 +56,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategory(Long id, CategoryDto dto) {
+    public CategoryDto updateCategory(Long id, CategoryDto dto) {
         dto.setId(id);
         Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
         category.setDescription(dto.getDescription());
         categoryRepository.save(category);
+        return mapperUtil.convert(category, new CategoryDto());
     }
 
     @Override
