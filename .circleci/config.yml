@@ -32,23 +32,23 @@ jobs:
           at: ~/practice-project
       - run:
           name: Docker Container that runs Postgresql in it
-          comman: docker run --name test-db -p 5432:5432 -e POS
+          comman: docker run --name test-db -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
       - run:
           name: Run Integration Test and Unit Tests
-          command:
+          command: |
             mvn test -Dskip.unit.tests=false -Dskip.integration.tests=false \
               -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
               -Dspring.datasource.username=postgres \
               -Dspring.datasource.password=1234
-  docker-image-create-and-push:
-    steps:
-      -
-  deploy:
-    machine: true
-    steps:
-      - run:
-          name: Connect to EC2 server and run image
-          command: |
+#  docker-image-create-and-push:
+#    steps:
+#      -
+#  deploy:
+#    machine: true
+#    steps:
+#      - run:
+#          name: Connect to EC2 server and run image
+#          command: |
 
 
 workflows:
@@ -62,6 +62,6 @@ workflows:
       - docker-image-create-and-push:
           requires:
             - test
-      - deploy:
-          requires:
-            - docker-image-create-and-push
+#      - deploy:
+#          requires:
+#            - docker-image-create-and-push
