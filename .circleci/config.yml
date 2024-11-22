@@ -1,45 +1,173 @@
+# version is necessary per circleCi docs
 version: 2
+# defining jobs: for CI/CD pipeline: -> automation steps with CircleCI, all this jobs will be executed on separate servers.
+#  1.building jar;
+#  2.create dockerImage and push it;
+#  3.pull the image and run in container in EC2 for deployment;
+#  4. Also, we can define test jobs for integration and unit tests.
+jobs:  # circleci already has docker installed on their servers
 
-jobs:
-  build:
-    docker:
-      - image: circleci/openjdk
-    working_directory: ~/practice-project
-    steps:
-      - checkout
-      - run:
-          name: Create a Directory
-          command: mkdir -p ~/practice-project
-      - restore_cache:
-          keys:
-            - practice-project-dependencies-{{ checksum "pom.xml" }}
-      - run:
-          name: Build (create JAR file)
-          command: mvn clean package -DskipTests
-      - save_cache:
-          paths:
-            -  ~/.m2
-          key: practice-project-dependencies-{{ checksum "pom.xml" }}
-      - persist_to_workspace:
-          root: ~/practice-project
-          paths:
-            - .
-  test:
-    machine: true
-    working_directory: ~/practice-project
-    steps:
-      - attach_workspace:
-          at: ~/practice-project
-      - run:
-          name: Docker Container that runs Postgresql in it
-          comman: docker run --name test-db -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
-      - run:
-          name: Run Integration Test and Unit Tests
-          command: |
-            mvn test -Dskip.unit.tests=false -Dskip.integration.tests=false \
-              -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
-              -Dspring.datasource.username=postgres \
-              -Dspring.datasource.password=1234
+  ## first job
+  build: # 1st job to build jar file
+     #machine: true #1.option: machine means we want to run build job in circleci server directly
+     docker: # 2.option: first create a new image then run the build job on your platform server
+       # we use openjdk to be ble to run mvn command to build jar file.
+       - image: circleci/openjdk  # use this image in to create a container in circleci server, put jdk to create jar file, then we can pass to next jobs
+     working_directory: ~/my-app # when we download jar file put it here, then we take the steps below
+     steps:
+       - checkout # 1st step, checkout to code, download, find the code in GitHub
+       - run: #run the command to do the job
+           name: create a new directory # run and make a new directory
+           command: mkdir -p ~/my-app # this is the command, if it doesn't exist create it. -p means if you get this folder don't give any errors
+       - restore_cache:
+           - keys: # this key is to be able to restore the caches, it's a string that stores all info in pom.xml
+               - app-dependencies--{{ checksum "pom.xml" }}
+       - run: # after we download the app, run this command to create jar file
+           name: Build (create JAR file) # create jar file by running mvn command
+           command: mvn clean package -DskipTests # run this command, this creates a new problem with dependencies
+       - save_cache:
+           - paths: # store the key inside this folder (download new dependencies and store)
+               - ~/.m2  # this is a default location for maven for all the libraries. direct to this folder m2
+           - key: app-dependencies--{{ checksum "pom.xml" }}
+
+
+       - persist_to_workspace: # we have followed the steps above, we got the jar file, build step is complete, now we need to pass the har file to next step in the pipeline: -> test
+           # this syntax is to define how to follow the pipeline connection for next step TEST
+           root: ~/my-app # where can we find what needs to be transferred/put into workspace, find at this location
+           paths: # what is the path folder, file:
+             - .  # . means add everything
+
+
+               ## 2nd job
+### now we are done with the build command, we have created JAR file and ready to deploy for next job
+  test: # 2nd job to run test, this wil be executed on separate server, for this we need to fill out above persist_to_workspace
+     machine: true # run this job in your local server, on circleci. circleci server are like a virtual machine ubuntu, they have already prebuild tool like: java, postgres, docker, ect.
+     working_directory: ~/my-app # find the app at this root location
+     steps:
+       - attach_workspace: ## what you have in previous job: persist_to_workspace:
+         at: ~/my-app
+       - run:
+           name: run docker container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
+           command: docker run --name my-app-DB -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
+       - run:
+           name: Run integration and unit tests
+           command: | #this is the command to run mvn test, then we need to provide the datasource connection:
+                    mvn test -Dskip.unit.test=false -Dskip.integration.tests=false \ # don't skip unit and integration test
+                             -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
+                             -Dspring.datasource.username=postgres \
+                             -Dspring.datasource.password=1234
+      ## we are done with our Test job
+
+
+### next step is to create a job which will create an image and push it to repository
+  docker-image-create-and-push: # 3rd job to crate an image of the jar and push it
+     machine: true # first thing is to specify the tools we need to use for this job, by enabling machine true we are using circleci tools prebuilt: java, postgres, docker, ect.
+     working_directory: ~/my-app   # next step is to specify t find the app: root folder
+     steps:  # steps where workspace connection after test job is completed, to make sure no fails
+       - attach_workspace:
+           at: ~/my-app
+       - run:
+           name: Create docker image # create this image and push it to docker hub, normally when we create an image and push it to dockerhub we use clientID/imageName:tagName / gregory1011/practice:v4 / for aws ecr is different check below
+           command: docker built -t 211125708628.dkr.ecr.us-east-1.amazonaws.com/practice-project:latest .  # use this command to build an image and copy all . [ . means copy all or everything from that directory] // this command comes from ECR step 4th
+       - run:
+           name: Login to image repository # we won't use dockerID and password to login for previous command, instead we will use [AWS ECR]
+           command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125708628.dkr.ecr.us-east-1.amazonaws.com #login to aws ecr: this command is from the ecr first line
+       - run:
+           name: Push the image to ECR
+           command: docker push practice-project:ci/cd # after the image is crated push to ecr
+            ## now we are done with the 3rd job, we have left to do command run username and password from ecr
+
+  ## this is the 4th job, we need to pull the image from ecr and run in ec2 server
+  deploy: # 4th job to deploy the image to EC2 server
+     machine: true
+     steps:
+       - run:
+           name: Connect to EC2 server and run the image
+           command: | # we use | this pipe sign for multiple line commands, we are using an ssh command to connect with server, -o means options
+             ssh -o "StrictHostKeyChecking=no"  <<'ENDSSH'
+             
+             ENDSSH
+          ##  "StrictHostKeyChecking=no" this is a question that circleci machine ask to connect with outside server ec2,
+          ## <<'ENDSSH this means: execute any commends that we want our ec2 instance to run until this line ENDSSH
+             ## 1st command: docker commands to stop and remove the practice-project container that are running the older version of the app
+             ## 2nd command: pull the image from ecr: aws command to login and pull the image: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125708628.dkr.ecr.us-east-1.amazonaws.com
+             ## before that we need to set up security credentials for username, password
+             ## docker commands to pull and run the new image in ec2 server,
+             ## add new commands to remove the older images of older version of application it any
+             ## we can add this commands to a separate file in ec2 server to make it easy to connect and run.
+
+
+
+
+
+workflows: # means we want to run jobs by certain flow, what runs 1st, what 2nd , skip 4th or ...
+    version: 2 # same version as on top
+    build_test_deploy: # this is the name the work flow
+       jobs:
+         - build # run 1st job
+         - test: # run 2nd job
+             requires:  # depends on build
+               - build
+         - docker-image-create-and-push: # run 3rd job
+             requires: # depends on test before creating an image, make sure the app is running fine without fail
+               - test
+         - deploy: # run 4th job
+            requires: # depends on
+              - docker-image-create-and-push
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#jobs:
+#  build:
+#    docker:
+#      - image: circleci/openjdk
+#    working_directory: ~/practice-project
+#    steps:
+#      - checkout
+#      - run:
+#          name: Create a Directory
+#          command: mkdir -p ~/practice-project
+#      - restore_cache:
+#          keys:
+#            - practice-project-dependencies-{{ checksum "pom.xml" }}
+#      - run:
+#          name: Build (create JAR file)
+#          command: mvn clean package -DskipTests
+#      - save_cache:
+#          paths:
+#            -  ~/.m2
+#          key: practice-project-dependencies-{{ checksum "pom.xml" }}
+#      - persist_to_workspace:
+#          root: ~/practice-project
+#          paths:
+#            - .
+#  test:
+#    machine: true
+#    working_directory: ~/practice-project
+#    steps:
+#      - attach_workspace:
+#          at: ~/practice-project
+#      - run:
+#          name: Docker Container that runs Postgresql in it
+#          comman: docker run --name test-db -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
+#      - run:
+#          name: Run Integration Test and Unit Tests
+#          command: |
+#            mvn test -Dskip.unit.tests=false -Dskip.integration.tests=false \
+#              -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
+#              -Dspring.datasource.username=postgres \
+#              -Dspring.datasource.password=1234
 #  docker-image-create-and-push:
 #    steps:
 #      -
@@ -51,17 +179,17 @@ jobs:
 #          command: |
 
 
-workflows:
-  version: 2
-  build-test-deploy:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - docker-image-create-and-push:
-          requires:
-            - test
+#workflows:
+#  version: 2
+#  build-test-deploy:
+#    jobs:
+#      - build
+#      - test:
+#          requires:
+#            - build
+#      - docker-image-create-and-push:
+#          requires:
+#            - test
 #      - deploy:
 #          requires:
 #            - docker-image-create-and-push
