@@ -217,7 +217,7 @@ public class UserServiceImplUnitTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        UserDto updatedUser = userService.updateUser(userDto.getId(), userDto);
+        UserDto updatedUser = userService.updateUser(userDto);
         //assert
         verify(passwordEncoder).encode(anyString());
         assertThat(updatedUser).isNotNull();
