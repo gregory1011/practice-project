@@ -100,6 +100,7 @@ jobs:  # circleci already has docker installed on their servers
 
 
 
+
 workflows: # means we want to run jobs by certain flow, what runs 1st, what 2nd , skip 4th or ...
     version: 2 # same version as on top
     build_test_deploy: # this is the name the work flow
