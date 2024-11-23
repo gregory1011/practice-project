@@ -45,15 +45,15 @@ jobs:  # circleci already has docker installed on their servers
        - attach_workspace: ## what you have in previous job: persist_to_workspace:
          at: ~/my-app
        - run:
-           name: run docker container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
+           name: Docker run container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
            command: docker run --name test-DB -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
        - run:
            name: Run integration and unit tests
            #this is the command to run mvn test, then we need to provide the datasource connection: # don't skip unit and integration test -Dskip.unit.test=false -Dskip.integration.tests=false \
-           command: | 
-                mvn test  -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
-                -Dspring.datasource.username=postgres \
-                -Dspring.datasource.password=1234
+           command: mvn test -Dskip.unit.tests=false -Dskip.integration.tests=false
+#                mvn test -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
+#                -Dspring.datasource.username=postgres \
+#                -Dspring.datasource.password=1234
       ## we are done with our Test job
 
 
