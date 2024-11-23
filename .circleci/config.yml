@@ -84,9 +84,7 @@ jobs:  # circleci already has docker installed on their servers
        - run:
            name: Connect to EC2 server and run the image
            command: | # we use | this pipe sign for multiple line commands, we are using an ssh command to connect with server, -o means options
-             ssh -o "StrictHostKeyChecking=no"  <<'ENDSSH'
-             /bin/bash ~/myApp/deploy_image.sh 
-             ENDSSH
+             ssh -o "StrictHostKeyChecking=no"  <<'ENDSSH' /bin/bash ~/myApp/deploy_image.sh ENDSSH
           ##  "StrictHostKeyChecking=no" this is a question that circleci machine ask to connect with outside server ec2,
           ## <<'ENDSSH this means: execute any commends that we want our ec2 instance to run until this line ENDSSH
              ## 1st command: docker commands to stop and remove the practice-project container that are running the older version of the app
