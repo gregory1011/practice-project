@@ -6,13 +6,12 @@ version: 2
 #  3.pull the image and run in container in EC2 for deployment;
 #  4. Also, we can define test jobs for integration and unit tests.
 jobs:  # circleci already has docker installed on their servers
-
   ## first job
   build: # 1st job to build jar file
      #machine: true #1.option: machine means we want to run build job in circleci server directly
      docker: # 2.option: first create a new image then run the build job on your platform server
        # we use openjdk to be ble to run mvn command to build jar file.
-       - image: cimg/openjdk:17.0  # use this image in to create a container in circleci server, put jdk to create jar file, then we can pass to next jobs
+       - image: cimg/openjdk:17.0.13  # use this image in to create a container in circleci server, put jdk to create jar file, then we can pass to next jobs
      working_directory: ~/my-app # when we download jar file put it here, then we take the steps below
      steps:
        - checkout # 1st step, checkout to code, download, find the code in GitHub
