@@ -12,7 +12,7 @@ jobs:  # circleci already has docker installed on their servers
      #machine: true #1.option: machine means we want to run build job in circleci server directly
      docker: # 2.option: first create a new image then run the build job on your platform server
        # we use openjdk to be ble to run mvn command to build jar file.
-       - image: circleci/openjdk  # use this image in to create a container in circleci server, put jdk to create jar file, then we can pass to next jobs
+       - image: cimg/openjdk:17.0  # use this image in to create a container in circleci server, put jdk to create jar file, then we can pass to next jobs
      working_directory: ~/my-app # when we download jar file put it here, then we take the steps below
      steps:
        - checkout # 1st step, checkout to code, download, find the code in GitHub
@@ -20,15 +20,15 @@ jobs:  # circleci already has docker installed on their servers
            name: create a new directory # run and make a new directory
            command: mkdir -p ~/my-app # this is the command, if it doesn't exist create it. -p means if you get this folder don't give any errors
        - restore_cache:
-           - keys: # this key is to be able to restore the caches, it's a string that stores all info in pom.xml
+           keys: # this key is to be able to restore the caches, it's a string that stores all info in pom.xml
                - app-dependencies--{{ checksum "pom.xml" }}
        - run: # after we download the app, run this command to create jar file
            name: Build (create JAR file) # create jar file by running mvn command
            command: mvn clean package -DskipTests # run this command, this creates a new problem with dependencies
        - save_cache:
-           - paths: # store the key inside this folder (download new dependencies and store)
+           paths: # store the key inside this folder (download new dependencies and store)
                - ~/.m2  # this is a default location for maven for all the libraries. direct to this folder m2
-           - key: app-dependencies--{{ checksum "pom.xml" }}
+           key: app-dependencies--{{ checksum "pom.xml" }}
 
 
        - persist_to_workspace: # we have followed the steps above, we got the jar file, build step is complete, now we need to pass the har file to next step in the pipeline: -> test
@@ -68,13 +68,13 @@ jobs:  # circleci already has docker installed on their servers
            at: ~/my-app
        - run:
            name: Create docker image # create this image and push it to docker hub, normally when we create an image and push it to dockerhub we use clientID/imageName:tagName / gregory1011/practice:v4 / for aws ecr is different check below
-           command: docker built -t 211125708628.dkr.ecr.us-east-1.amazonaws.com/practice-project:latest .  # use this command to build an image and copy all . [ . means copy all or everything from that directory] // this command comes from ECR step 4th
+           command: docker built -t 211125708628.dkr.ecr.us-east-1.amazonaws.com/practice-project:cicd .  # use this command to build an image and copy all . [ . means copy all or everything from that directory] // this command comes from ECR step 4th
        - run:
            name: Login to image repository # we won't use dockerID and password to login for previous command, instead we will use [AWS ECR]
            command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125708628.dkr.ecr.us-east-1.amazonaws.com #login to aws ecr: this command is from the ecr first line
        - run:
            name: Push the image to ECR
-           command: docker push practice-project:ci/cd # after the image is crated push to ecr
+           command: docker push practice-project:cicd # after the image is crated push to ecr
             ## now we are done with the 3rd job, we have left to do command run username and password from ecr
 
   ## this is the 4th job, we need to pull the image from ecr and run in ec2 server
