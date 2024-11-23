@@ -49,12 +49,11 @@ jobs:  # circleci already has docker installed on their servers
            command: docker run --name test-DB -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
        - run:
            name: Run integration and unit tests
-           #this is the command to run mvn test, then we need to provide the datasource connection: # don't skip unit and integration test
+           #this is the command to run mvn test, then we need to provide the datasource connection: # don't skip unit and integration test -Dskip.unit.test=false -Dskip.integration.tests=false \
            command: | 
-                    mvn test -Dskip.unit.test=false -Dskip.integration.tests=false \ 
-                             -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
-                             -Dspring.datasource.username=postgres \
-                             -Dspring.datasource.password=1234
+                mvn test  -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
+                -Dspring.datasource.username=postgres \
+                -Dspring.datasource.password=1234
       ## we are done with our Test job
 
 
