@@ -46,7 +46,7 @@ jobs:  # circleci already has docker installed on their servers
          at: ~/my-app
        - run:
            name: run docker container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
-           command: docker run --name my-app-DB -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
+           command: docker run --name test-DB -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
        - run:
            name: Run integration and unit tests
            command: | #this is the command to run mvn test, then we need to provide the datasource connection:
@@ -57,6 +57,7 @@ jobs:  # circleci already has docker installed on their servers
       ## we are done with our Test job
 
 
+##3rd job
 ### next step is to create a job which will create an image and push it to repository
   docker-image-create-and-push: # 3rd job to crate an image of the jar and push it
      machine: true # first thing is to specify the tools we need to use for this job, by enabling machine true we are using circleci tools prebuilt: java, postgres, docker, ect.
