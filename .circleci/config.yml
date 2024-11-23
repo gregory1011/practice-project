@@ -29,8 +29,6 @@ jobs:  # circleci already has docker installed on their servers
            paths: # store the key inside this folder (download new dependencies and store)
                - ~/.m2  # this is a default location for maven for all the libraries. direct to this folder m2
            key: app-dependencies--{{ checksum "pom.xml" }}
-
-
        - persist_to_workspace: # we have followed the steps above, we got the jar file, build step is complete, now we need to pass the har file to next step in the pipeline: -> test
            # this syntax is to define how to follow the pipeline connection for next step TEST
            root: ~/my-app # where can we find what needs to be transferred/put into workspace, find at this location
