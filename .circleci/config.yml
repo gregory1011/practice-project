@@ -18,7 +18,7 @@ jobs:  # circleci already has docker installed on their servers
        - checkout # 1st step, checkout to code, download, find the code in GitHub
        - run: #run the command to do the job
            name: create a new directory # run and make a new directory
-           command: mkdir my-app # this is the command, if it doesn't exist create it. -p means if you get this folder don't give any errors
+           command: mkdir -p workspace # this is the command, if it doesn't exist create it. -p means if you get this folder don't give any errors
        - restore_cache:
            keys: # this key is to be able to restore the caches, it's a string that stores all info in pom.xml
                - app-dependencies--{{ checksum "pom.xml" }}
@@ -31,7 +31,7 @@ jobs:  # circleci already has docker installed on their servers
            key: app-dependencies--{{ checksum "pom.xml" }}
        - persist_to_workspace: # we have followed the steps above, we got the jar file, build step is complete, now we need to pass the har file to next step in the pipeline: -> test
            # this syntax is to define how to follow the pipeline connection for next step TEST
-           root: ~/my-app # where can we find what needs to be transferred/put into workspace, find at this location
+           root: workspace # where can we find what needs to be transferred/put into workspace, find at this location
            paths: # what is the path folder, file:
              - .  # . means add everything
 
@@ -44,7 +44,7 @@ jobs:  # circleci already has docker installed on their servers
      steps:
        ## what you have in previous job: persist_to_workspace:
        - attach_workspace:
-         at: my-app
+         at: my-app/workspace
        - run:
            name: Docker run container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
            command: docker run --name test-DB -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
