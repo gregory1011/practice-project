@@ -18,7 +18,7 @@ jobs:  # circleci already has docker installed on their servers
        - checkout # 1st step, checkout to code, download, find the code in GitHub
        - run: #run the command to do the job
            name: create a new directory # run and make a new directory
-           command: mkdir -p ~/my-app # this is the command, if it doesn't exist create it. -p means if you get this folder don't give any errors
+           command: mkdir my-app # this is the command, if it doesn't exist create it. -p means if you get this folder don't give any errors
        - restore_cache:
            keys: # this key is to be able to restore the caches, it's a string that stores all info in pom.xml
                - app-dependencies--{{ checksum "pom.xml" }}
@@ -42,7 +42,8 @@ jobs:  # circleci already has docker installed on their servers
      machine: true # run this job in your local server, on circleci. circleci server are like a virtual machine ubuntu, they have already prebuild tool like: java, postgres, docker, ect.
      working_directory: ~/my-app # find the app at this root location
      steps:
-       - attach_workspace: ## what you have in previous job: persist_to_workspace:
+       ## what you have in previous job: persist_to_workspace:
+       - attach_workspace:
          at: ~/my-app
        - run:
            name: Docker run container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
