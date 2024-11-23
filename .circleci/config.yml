@@ -44,7 +44,7 @@ jobs:  # circleci already has docker installed on their servers
      steps:
        ## what you have in previous job: persist_to_workspace:
        - attach_workspace:
-         at: ~/my-app
+         at: my-app
        - run:
            name: Docker run container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
            command: docker run --name test-DB -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest
