@@ -45,7 +45,7 @@ jobs:  # circleci already has docker installed on their servers
            at: ~/my-app
        - run:
            name: Docker run container with postgresql DB # we are using docker to run in our CircleCi machine, we run docker command. provide the name of the container:my-app-DB, environment variables, -e : then run image=postgres:latest | our -e comes from RDS instance connection info
-           command: docker run --name test-DB -d -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest  # BEFORE -p we can use -d to detach all logs from console
+           command: docker run --name test-DB -p 5432:5432 -e POSTGRES_DB=practice-project -e POSTGRES_USERNAME=postgres -e POSTGRES_PASSWORD=1234 postgres:latest  # BEFORE -p we can use -d to detach all logs from console
        - run:
            name: Run integration and unit tests
            #this is the command to run mvn test, then we need to provide the datasource connection: # don't skip unit and integration test -Dskip.unit.test=false -Dskip.integration.tests=false \
@@ -54,6 +54,7 @@ jobs:  # circleci already has docker installed on their servers
 #                -Dspring.datasource.url=jdbc:postgresql://localhost:5432/practice-project \
 #                -Dspring.datasource.username=postgres \
 #                -Dspring.datasource.password=1234
+       ## when we have env variable for datasource in our app.properties we need to define them here.
       ## we are done with our Test job
 
 
