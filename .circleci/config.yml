@@ -74,7 +74,7 @@ jobs:  # circleci already has docker installed on their servers
            command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125708628.dkr.ecr.us-east-1.amazonaws.com #login to aws ecr: this command is from the ecr first line
        - run:
            name: Push the image to ECR
-           command: docker push practice-project:cicd # after the image is crated push to ecr
+           command: docker push 211125708628.dkr.ecr.us-east-1.amazonaws.com/practice-project:cicd # after the image is crated push to ecr
             ## now we are done with the 3rd job, we have left to do command run username and password from ecr
 
   ## this is the 4th job, we need to pull the image from ecr and run in ec2 server
