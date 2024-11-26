@@ -3,7 +3,7 @@ services:
 
   spring-app:
     container_name: practice-app
-    image: "gregory1011/practice-app:v1"
+    image: "gregory1011/practice-app:v2"
     ports:
       - "9077:8003" # tomcat runs at 8003 and the container will map it 9077 -> http://localhost:9077
     environment:
@@ -31,6 +31,8 @@ services:
       POSTGRES_DB: practice-project
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
+    ports:
+     - '5432:5432'
 #    command: -p 5432
 #    expose:
 #      - "5432"
