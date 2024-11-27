@@ -1,10 +1,8 @@
 package com.app.service;
 
-import com.app.dto.AddressDto;
-import com.app.dto.CompanyDto;
-import com.app.dto.RoleDto;
-import com.app.dto.UserDto;
+import com.app.dto.*;
 import com.app.enums.CompanyStatus;
+
 
 public class TestDocInitializer {
 
@@ -19,7 +17,7 @@ public class TestDocInitializer {
                 .confirmPassword("Abc1")
                 .role(new RoleDto(1L, role))
                 .isOnlyAdmin(false)
-                .company(new CompanyDto())
+                .company(getCompany(CompanyStatus.ACTIVE))
                 .build();
     }
 
@@ -31,6 +29,13 @@ public class TestDocInitializer {
                 .phone("213-440-9044")
                 .companyStatus(status)
                 .address(new AddressDto())
+                .build();
+    }
+
+    public static CategoryDto getCategory(){
+        return CategoryDto.builder()
+                .company(getCompany(CompanyStatus.ACTIVE))
+                .description("Test_Category")
                 .build();
     }
 
