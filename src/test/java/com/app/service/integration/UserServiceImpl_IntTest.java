@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional // we use transactional to handle deleteUser() -> when the user isDeleted= true, and we search for id (in entity class @Where(clause = "is_deleted=false")
 @SpringBootTest
-public class UserServiceImplIntTest {
+public class UserServiceImpl_IntTest {
 
     @Autowired
     private UserRepository userRepository;
