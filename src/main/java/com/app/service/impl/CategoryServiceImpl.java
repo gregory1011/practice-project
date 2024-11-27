@@ -24,18 +24,25 @@ public class CategoryServiceImpl implements CategoryService {
     private final SecurityService securityService;
 
     @Override
+    public CategoryDto findById(Long id) {
+        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+        CategoryDto dto = mapperUtil.convert(category, new CategoryDto());
+        dto.setHasProduct(!category.getProduct().isEmpty()); // if is not empty= true, otherwise= false
+        return dto;
+    }
+
+    @Override
     public List<CategoryDto> listAllCategories() {
-        Long id = securityService.getLoggedInUser().getCompany().getId();
-        List<Category> list = categoryRepository.findAll();
-        return list.stream()
-                .filter(category -> category.getCompany().getId().equals(id))
+        CompanyDto companyDto = securityService.getLoggedInUser().getCompany();
+        return categoryRepository.findByCompanyId(companyDto.getId()).stream()
                 .sorted(Comparator.comparing(Category::getDescription))
-                .map(each-> {  // block of code t determine if it hasProducts true or false;
+                .map(each-> {  // block of code to determine if it hasProducts true or false;
                     CategoryDto dto = mapperUtil.convert(each, new CategoryDto());
-                    dto.setHasProduct(!each.getProduct().isEmpty());
+                    boolean change= false;
+                    change= !each.getProduct().isEmpty(); // if it has product then it's true;
+                    dto.setHasProduct(change);
                     return dto;
-                })
-                .toList();
+                }).toList();
     }
 
     @Override
@@ -56,9 +63,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto updateCategory(Long id, CategoryDto dto) {
-        dto.setId(id);
-        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+    public CategoryDto updateCategory( CategoryDto dto) {
+        Category category = categoryRepository.findById(dto.getId()).orElseThrow(CategoryNotFoundException::new);
         category.setDescription(dto.getDescription());
         categoryRepository.save(category);
         return mapperUtil.convert(category, new CategoryDto());
