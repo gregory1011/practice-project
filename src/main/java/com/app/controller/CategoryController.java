@@ -56,7 +56,8 @@ public class CategoryController {
         if (bindingResult.hasErrors()) {
            return "category/category-update";
        }
-       categoryService.updateCategory(id, category);
+        category.setId(id);
+       categoryService.updateCategory(category);
        return "redirect:/categories/list";
     }
 
