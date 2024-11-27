@@ -31,8 +31,8 @@ public class CompanyDto {
     @Pattern(regexp = "^(https?://)?([a-zA-Z0-9.-]+)\\.([a-zA-Z]{2,})(:[0-9]+)?(/[^/]+)*$")
     private String website;
 
+    private CompanyStatus companyStatus;
+
     @Valid
     private AddressDto address;
-
-    private CompanyStatus companyStatus;
 }
