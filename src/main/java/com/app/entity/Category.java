@@ -25,6 +25,6 @@ public class Category extends BaseEntity {
     @ManyToOne()
     private Company company;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private List<Product> product;
 }
