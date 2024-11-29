@@ -15,6 +15,7 @@ import com.app.service.TestDocInitializer;
 import com.app.service.impl.CategoryServiceImpl;
 import com.app.util.MapperUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ import org.modelmapper.ModelMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -71,6 +73,7 @@ public class CategoryServiceImpl_UnitTest {
 
 
     @Test
+    @DisplayName(value = "findById")
     void findById_shouldReturnCategoryDto(){
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
         CategoryDto result = categoryService.findById(1L);
@@ -80,6 +83,7 @@ public class CategoryServiceImpl_UnitTest {
         verify(categoryRepository, times(1)).findById(anyLong());
     }
     @Test
+    @DisplayName("0x1F600")
     void findById_shouldThrowException(){
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(CategoryNotFoundException.class, () -> categoryService.findById(1L));
@@ -174,5 +178,9 @@ public class CategoryServiceImpl_UnitTest {
         assertThat(category.getIsDeleted()).isFalse();
     }
 
-
+    @Test
+    void name() {
+        IntStream.rangeClosed(2, 100)
+                .filter( i -> i % 2 == 0 );
+    }
 }
