@@ -52,13 +52,11 @@ public class CategoryController {
     @PostMapping("/update/{id}")
     public String updateCategory(@Valid @PathVariable("id") Long id, @ModelAttribute("category")CategoryDto category, BindingResult bindingResult, Model model) {
         boolean descriptionExists = categoryService.isDescriptionExists(category);
-        if (descriptionExists) bindingResult.rejectValue("description", "err.description","Description already exists");
-        if (bindingResult.hasErrors()) {
-           return "category/category-update";
-       }
+        if (descriptionExists) bindingResult.rejectValue("description", "err.description", "Description already exists");
+        if (bindingResult.hasErrors()) return "category/category-update";
         category.setId(id);
-       categoryService.updateCategory(category);
-       return "redirect:/categories/list";
+        categoryService.updateCategory(category);
+        return "redirect:/categories/list";
     }
 
     @GetMapping("/delete/{id}")
