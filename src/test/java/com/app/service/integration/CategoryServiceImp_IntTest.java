@@ -67,8 +67,13 @@ public class CategoryServiceImp_IntTest {
         assertThat(savedCategory.getDescription()).isEqualTo(categoryDto.getDescription());
     }
 
-//    @Test
-//    void testUpdateCategory() {
-//
-//    }
+    @Test
+    void testUpdateCategory() {
+        CategoryDto categoryDto = TestDocInitializer.getCategory();
+        CategoryDto updatedCategory = categoryService.updateCategory(categoryDto);
+
+        assertThat(updatedCategory).isNotNull();
+        assertThat(updatedCategory.getId()).isNotNull();
+        assertThat(updatedCategory.getDescription()).isEqualTo(categoryDto.getDescription());
+    }
 }
