@@ -55,14 +55,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-        CategoryDto dto = mapperUtil.convert(category, new CategoryDto());
-        dto.setHasProduct(!category.getProduct().isEmpty());
-        return dto;
-    }
-
-    @Override
     public CategoryDto updateCategory( CategoryDto dto) {
         Category category = categoryRepository.findById(dto.getId()).orElseThrow(CategoryNotFoundException::new);
         category.setDescription(dto.getDescription());
