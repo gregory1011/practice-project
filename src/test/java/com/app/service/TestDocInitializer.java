@@ -34,6 +34,7 @@ public class TestDocInitializer {
 
     public static CategoryDto getCategory(){
         return CategoryDto.builder()
+                .id(1L)
                 .company(getCompany(CompanyStatus.ACTIVE))
                 .description("Test Category")
                 .build();
