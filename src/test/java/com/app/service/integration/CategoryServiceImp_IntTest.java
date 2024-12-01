@@ -94,9 +94,4 @@ public class CategoryServiceImp_IntTest {
         assertThat(throwable.getMessage()).isEqualTo("Category not found");
     }
 
-    @Test
-    void testIsDescriptionExists() {
-        categoryRepository.findCategoryByDescriptionAndCompanyId("Test", 1L);
-    }
-
 }
