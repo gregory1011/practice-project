@@ -1,7 +1,7 @@
 package com.app.service;
 
 import com.app.dto.*;
-import com.app.enums.CompanyStatus;
+import com.app.enums.*;
 
 
 public class TestDocInitializer {
