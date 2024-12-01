@@ -7,6 +7,7 @@ import com.app.exceptions.UserNotFoundException;
 import com.app.repository.CategoryRepository;
 import com.app.service.CategoryService;
 import com.app.service.SecuritySetUpUtil;
+import com.app.service.TestDocInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,17 @@ public class CategoryServiceImp_IntTest {
         assertThat(dtoList).isNotNull();
     }
 
+    @Test
+    void testSaveCategory() {
+        CategoryDto categoryDto = TestDocInitializer.getCategory();
+        CategoryDto savedCategory = categoryService.saveCategory(categoryDto);
+        assertThat(savedCategory).isNotNull();
+        assertThat(savedCategory.getId()).isNotNull();
+        assertThat(savedCategory.getDescription()).isEqualTo(categoryDto.getDescription());
+    }
 
-
+//    @Test
+//    void testUpdateCategory() {
+//
+//    }
 }
