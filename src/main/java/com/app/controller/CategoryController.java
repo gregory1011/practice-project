@@ -45,7 +45,7 @@ public class CategoryController {
 
     @GetMapping("/update/{id}")
     public String updateCategory( @PathVariable("id") Long id, Model model) {
-        model.addAttribute("category", categoryService.getCategoryById(id));
+        model.addAttribute("category", categoryService.findById(id));
         return "category/category-update";
     }
 
