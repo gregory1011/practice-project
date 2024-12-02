@@ -5,8 +5,8 @@ import com.app.enums.CompanyStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
+
 
 
 @Getter
