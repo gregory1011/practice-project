@@ -32,14 +32,14 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public CompanyDto listCompanyById(Long id) {
-        Company company = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException("Company not found"));
-        return mapperUtil.convert(company, new CompanyDto());
+    public CompanyDto getCompanyByLoggedInUser() {
+        return securityService.getLoggedInUser().getCompany();
     }
 
     @Override
-    public CompanyDto getCompanyByLoggedInUser() {
-        return securityService.getLoggedInUser().getCompany();
+    public CompanyDto findById(Long id) {
+        Company company = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException("Company not found"));
+        return mapperUtil.convert(company, new CompanyDto());
     }
 
     @Override
@@ -92,6 +92,5 @@ public class CompanyServiceImpl implements CompanyService {
         if (company == null)return false;
         return company.getTitle().equals(dto.getTitle());
     }
-
 
 }
