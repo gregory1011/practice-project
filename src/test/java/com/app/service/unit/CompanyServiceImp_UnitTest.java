@@ -7,6 +7,7 @@ import com.app.entity.Company;
 import com.app.entity.Role;
 import com.app.entity.User;
 import com.app.enums.CompanyStatus;
+import com.app.exceptions.CompanyNotFoundException;
 import com.app.repository.CompanyRepository;
 import com.app.service.SecurityService;
 import com.app.service.TestDocInitializer;
@@ -20,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
@@ -82,7 +85,29 @@ public class CompanyServiceImp_UnitTest {
         verify(securityService, times(1)).getLoggedInUser();
     }
 
-
+    @Test
+    void findById_shouldReturnCompanyDto() {
+        //given
+        CompanyDto dto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
+        Company entity = mapperUtil.convert(dto, new Company());
+        // when part -> mock repository
+        when(companyRepository.findById(1L)).thenReturn(Optional.of(entity));
+        //calling the actual method
+        CompanyDto result = companyService.findById(1L);
+        //then
+        assertThat(result).usingRecursiveComparison().isEqualTo(dto);
+        verify(companyRepository, times(1)).findById(1L);
+    }
+    @Test
+    void findById_shouldThrowException() {
+        // when part
+        when(companyRepository.findById(1L)).thenReturn(Optional.empty());
+        Throwable throwable = catchThrowable(() -> companyService.findById(1L));
+        //then part
+        assertThat(throwable).isInstanceOf(CompanyNotFoundException.class);
+        verify(companyRepository, times(1)).findById(1L);
+        assertThat(throwable.getMessage()).isEqualTo("Company not found");
+    }
 }
 
 
