@@ -58,7 +58,7 @@ public class CompanyController {
 
     @GetMapping("/update/{id}")
     public String editCompany(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("company", companyService.listCompanyById(id));
+        model.addAttribute("company", companyService.findById(id));
         return "company/company-update";
     }
 
