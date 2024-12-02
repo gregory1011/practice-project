@@ -22,6 +22,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,12 +55,12 @@ public class CompanyServiceImp_UnitTest {
     void setUp() {
         company= new Company();
         company.setId(1L);
-        company.setTitle("Test_Company");
+        company.setTitle("Test Company");
         company.setCompanyStatus(CompanyStatus.ACTIVE);
 
         companyDto= new CompanyDto();
         companyDto.setId(1L);
-        companyDto.setTitle("Test_Company");
+        companyDto.setTitle("Test Company");
         companyDto.setCompanyStatus(CompanyStatus.ACTIVE);
 
         Role role= new Role();
@@ -108,6 +110,23 @@ public class CompanyServiceImp_UnitTest {
         verify(companyRepository, times(1)).findById(1L);
         assertThat(throwable.getMessage()).isEqualTo("Company not found");
     }
+
+    @Test
+    void listAllCompanies_shouldReturnListOfCompanyDto() {
+        //given part
+        UserDto loggedInUser= mapperUtil.convert(user, new UserDto());
+
+        //when part
+        when(securityService.getLoggedInUser()).thenReturn(loggedInUser);
+        when(companyRepository.findAll()).thenReturn(List.of(company));
+        List<CompanyDto> result = companyService.listAllCompanies();
+        assertThat(result).usingRecursiveComparison().isEqualTo(List.of(companyDto));
+        verify(companyRepository, times(1)).findAll();
+        assertThat(result).hasSize(1);
+    }
+
+
+
 }
 
 
