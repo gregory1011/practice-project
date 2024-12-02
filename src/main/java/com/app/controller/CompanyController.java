@@ -64,13 +64,14 @@ public class CompanyController {
 
     @PostMapping("/update/{id}")
     public String updateCompany(@Valid @PathVariable("id") Long id, @ModelAttribute("company") CompanyDto companyDto, BindingResult bindingResult, Model model) {
-        boolean titleExist = companyService.titleExist(companyDto);
+        boolean titleExist = companyService.titleExist(companyDto); // true if not (!entity.getTitle().equals(dto.getTitle()));
         if (titleExist) bindingResult.rejectValue("title", "err.title", "Title already exist.");
         if (bindingResult.hasErrors()) {
             model.addAttribute("countries", addressService.listAllCountries());
             return "company/company-update";
         }
-        companyService.updateCompany(id, companyDto);
+        companyDto.setId(id);
+        companyService.updateCompany(companyDto);
         return "redirect:/companies/list";
     }
 
