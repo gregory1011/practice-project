@@ -9,9 +9,9 @@ public interface CompanyService {
     CompanyDto getCompanyByLoggedInUser();
     CompanyDto findById(Long id);
     List<CompanyDto> listAllCompanies();
-    void saveCompany(CompanyDto newCompany);
-    void activateCompany(Long id);
-    void deactivateCompany(Long id);
-    void updateCompany(Long id, CompanyDto companyDto);
+    CompanyDto saveCompany(CompanyDto newCompany);
+    CompanyDto activateCompany(Long id);
+    CompanyDto deactivateCompany(Long id);
+    CompanyDto updateCompany(CompanyDto dto);
     boolean titleExist(CompanyDto dto);
 }
