@@ -2,7 +2,6 @@ package com.app.converter;
 
 
 import com.app.dto.CompanyDto;
-import com.app.entity.Company;
 import com.app.service.CompanyService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -19,4 +18,5 @@ public class CompanyDtoConverter implements Converter<String, CompanyDto> {
         if (source.isEmpty()) return null;
         return companyService.findById(Long.parseLong(source));
     }
+
 }
