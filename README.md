@@ -92,7 +92,7 @@ Follow the steps below to get the _Demo Application_ up and running:
 - **There are 4 roles within:**
   - all use same password: Abc1
     - Root user
-      - root@cydeo.com
+      - root@mail.com
     - Admin user
       - admin@greentech.com
     - Manager user
