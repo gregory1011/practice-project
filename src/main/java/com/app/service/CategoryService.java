@@ -1,9 +1,8 @@
 package com.app.service;
 
 import com.app.dto.CategoryDto;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+
 
 public interface CategoryService {
 
