@@ -22,14 +22,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -119,13 +116,81 @@ public class CompanyServiceImp_UnitTest {
         //when part
         when(securityService.getLoggedInUser()).thenReturn(loggedInUser);
         when(companyRepository.findAll()).thenReturn(List.of(company));
+
         List<CompanyDto> result = companyService.listAllCompanies();
+
+        //then part
         assertThat(result).usingRecursiveComparison().isEqualTo(List.of(companyDto));
         verify(companyRepository, times(1)).findAll();
         assertThat(result).hasSize(1);
     }
 
+    @Test
+    void saveCompany_shouldReturnCompanyDto() {
+        //given
+        company.setCompanyStatus(CompanyStatus.PASSIVE);
+        //when part
+        when(companyRepository.save(any(Company.class))).thenReturn(company);
 
+        CompanyDto result = companyService.saveCompany(companyDto);
+        //then part
+        assertThat(result).usingRecursiveComparison().isEqualTo(companyDto);
+    }
+
+    @Test
+    void activateCompany_shouldReturnActivatedCompanyDto() {
+        //when part
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
+        when(companyRepository.save(any(Company.class))).thenReturn(company);
+
+        CompanyDto result = companyService.activateCompany(1L);
+        //then part
+        assertThat(result).usingRecursiveComparison().isEqualTo(companyDto);
+        assertThat(result.getCompanyStatus()).isEqualTo(CompanyStatus.ACTIVE);
+    }
+
+    @Test
+    void deactivateCompany_shouldReturnPassiveCompanyDto() {
+        //given
+        companyDto.setCompanyStatus(CompanyStatus.PASSIVE);
+        //when
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
+        when(companyRepository.save(any(Company.class))).thenReturn(company);
+
+        CompanyDto result = companyService.deactivateCompany(1L);
+
+        //then part
+        assertThat(result).usingRecursiveComparison().isEqualTo(companyDto);
+        assertThat(result.getCompanyStatus()).isEqualTo(CompanyStatus.PASSIVE);
+    }
+
+    @Test
+    void updateCompany_shouldReturnUpdatedCompany() {
+        //when
+        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
+        when(companyRepository.save(any(Company.class))).thenReturn(company);
+
+        CompanyDto result = companyService.updateCompany(companyDto);
+        //then part
+        assertThat(result).usingRecursiveComparison().isEqualTo(companyDto);
+    }
+
+    @Test
+    void titleExist_shouldReturnTrueIfTitleExists() {
+        //given
+        company.setId(2L);
+        //when
+        when(companyRepository.findByTitle(anyString())).thenReturn(Optional.of(company));
+        boolean result = companyService.titleExist(companyDto);
+        assertThat(result).isTrue();
+    }
+    @Test
+    void titleExist_shouldReturnFalseIfTitleDoesNotExist() {
+        //when
+        when(companyRepository.findByTitle(anyString())).thenReturn(Optional.empty());
+        boolean result = companyService.titleExist(companyDto);
+        assertThat(result).isFalse();
+    }
 
 }
 
