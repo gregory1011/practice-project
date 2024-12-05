@@ -12,6 +12,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findByCompanyId(Long companyId);
+
     @Query(value = "select c from categories c where c.description= ?1 and c.company.id= ?2")
     Category findCategoryByDescriptionAndCompanyId (String description, Long companyId);
 
