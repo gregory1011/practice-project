@@ -75,4 +75,11 @@ public class UserController {
         return "redirect:/users/list";
     }
 
+    @ModelAttribute
+    public void commonAttributes(Model model) {
+//        model.addAttribute("userRoles", roleService.listAllRoles());
+//        model.addAttribute("companies", companyService.listAllCompanies());
+        model.addAttribute("title", "Cydeo Accounting-User");
+    }
+
 }
