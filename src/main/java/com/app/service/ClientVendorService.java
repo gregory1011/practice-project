@@ -7,10 +7,11 @@ import java.util.List;
 
 public interface ClientVendorService {
 
+    ClientVendorDto findById(Long id);
     List<ClientVendorDto> listAllClientVendors();
-    List<ClientVendorDto> listAllByClientVendorTypeAndCompanyId(ClientVendorType clientVendorType);
-    void saveClientVendor(ClientVendorDto clientVendorDto);
+    List<ClientVendorDto> listAllByClientVendorType(ClientVendorType clientVendorType);
+    ClientVendorDto saveClientVendor(ClientVendorDto clientVendorDto);
+    ClientVendorDto updateClientVendor(ClientVendorDto clientVendor);
     void deleteClientVendor(Long id);
-    ClientVendorDto listClientVendorById(Long id);
-    void updateClientVendor(Long id, ClientVendorDto clientVendor);
+    boolean isClientVendorNameExists(String clientVendorName);
 }
