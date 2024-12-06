@@ -47,6 +47,8 @@ public class ClientVendorController {
 
     @PostMapping("/create")
     public String postClientVendor(@Valid @ModelAttribute("newClientVendor") ClientVendorDto newClientVendor, BindingResult bindingResult, Model model) {
+        boolean isClientVendorNameExist= clientVendorService.isClientVendorNameExists(newClientVendor.getClientVendorName());
+        if (isClientVendorNameExist) bindingResult.rejectValue("clientVendorName", "", "Name already exists.");
         if (bindingResult.hasErrors()) {
             model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
             model.addAttribute("countries", addressService.listAllCountries());
@@ -64,7 +66,7 @@ public class ClientVendorController {
 
     @GetMapping("/update/{id}")
     public String updateClientVendor(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("clientVendor", clientVendorService.listClientVendorById(id));
+        model.addAttribute("clientVendor", clientVendorService.findById(id));
         model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
         model.addAttribute("countries", addressService.listAllCountries());
         return "clientVendor/clientVendor-update";
@@ -73,12 +75,13 @@ public class ClientVendorController {
     @PostMapping("/update/{id}")
     public String updClientVendor(@Valid @PathVariable("id")Long id, @ModelAttribute("clientVendor")ClientVendorDto clientVendor, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()) {
-            model.addAttribute("clientVendor", clientVendorService.listClientVendorById(id));
+            model.addAttribute("clientVendor", clientVendorService.findById(id));
             model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
             model.addAttribute("countries", addressService.listAllCountries());
             return "clientVendor/clientVendor-update";
         }
-        clientVendorService.updateClientVendor(id, clientVendor);
+        clientVendor.setId(id);
+        clientVendorService.updateClientVendor(clientVendor);
         return "redirect:/clientVendors/list";
     }
 
