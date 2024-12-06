@@ -34,4 +34,7 @@ public class ClientVendor extends BaseEntity {
     @JoinColumn(nullable = false)
     @ManyToOne()
     private Company company;
+
+    @OneToMany(mappedBy = "clientVendor")
+    private List<Invoice> invoices;
 }
