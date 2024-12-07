@@ -7,6 +7,7 @@ import com.app.service.AddressService;
 import com.app.service.ClientVendorService;
 import com.app.service.InvoiceService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/clientVendors")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ClientVendorController {
 
 
@@ -47,7 +48,7 @@ public class ClientVendorController {
 
     @PostMapping("/create")
     public String postClientVendor(@Valid @ModelAttribute("newClientVendor") ClientVendorDto newClientVendor, BindingResult bindingResult, Model model) {
-        boolean isClientVendorNameExist= clientVendorService.isClientVendorNameExists(newClientVendor.getClientVendorName());
+        boolean isClientVendorNameExist= clientVendorService.isClientVendorNameExists(newClientVendor);
         if (isClientVendorNameExist) bindingResult.rejectValue("clientVendorName", "", "Name already exists.");
         if (bindingResult.hasErrors()) {
             model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
