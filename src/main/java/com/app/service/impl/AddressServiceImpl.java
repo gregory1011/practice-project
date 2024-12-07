@@ -5,6 +5,7 @@ import com.app.client.CountryClient;
 import com.app.dto.common.CountryDto;
 import com.app.dto.common.TokenDto;
 import com.app.service.AddressService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
     private final CountryClient countryClient;
@@ -28,10 +30,7 @@ public class AddressServiceImpl implements AddressService {
 
     private List<String> displayCountryList;
 
-    public AddressServiceImpl(CountryClient countryClient) {
-        this.countryClient = countryClient;
-    }
-
+    //method
     private String getBearerToken(){
         TokenDto tokenDto = countryClient.auth(email, token);
         return "Bearer "+tokenDto.getAuthToken();
