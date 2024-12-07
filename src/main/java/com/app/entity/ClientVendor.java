@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -31,10 +32,10 @@ public class ClientVendor extends BaseEntity {
     @OneToOne(cascade = CascadeType.PERSIST)
     private Address address;
 
-    @JoinColumn(nullable = false)
+    @NotNull
     @ManyToOne()
     private Company company;
 
-    @OneToMany(mappedBy = "clientVendor")
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Invoice> invoices;
 }
