@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserService {
 
-    UserDto listById(Long id);
+    UserDto getById(Long id);
     UserDto findByUsername(String username);
     List<UserDto> listAllUsers();
     UserDto saveUser(UserDto userDto);
