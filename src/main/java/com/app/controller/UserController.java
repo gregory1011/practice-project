@@ -5,6 +5,7 @@ import com.app.service.CompanyService;
 import com.app.service.RoleService;
 import com.app.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +15,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
@@ -50,7 +51,7 @@ public class UserController {
 
     @GetMapping("/update/{id}")
     public String updateUser(@PathVariable("id")Long id, Model model) {
-        model.addAttribute("user", userService.listById(id));
+        model.addAttribute("user", userService.getById(id));
         model.addAttribute("userRoles", roleService.listAllRoles());
         model.addAttribute("companies", companyService.listAllCompanies());
         return "user/user-update";
