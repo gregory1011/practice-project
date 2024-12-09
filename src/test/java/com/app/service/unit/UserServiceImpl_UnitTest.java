@@ -65,7 +65,7 @@ public class UserServiceImpl_UnitTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(userRepository.countAllByCompany_IdAndRoleIsAdmin(anyLong())).thenReturn(1);
 
-        UserDto actualUser = userService.listById(1L);
+        UserDto actualUser = userService.getById(1L);
         assertThat(actualUser.isOnlyAdmin()).isTrue();
         assertThat(actualUser).usingRecursiveComparison()
                 .ignoringFields("password", "confirmPassword", "isOnlyAdmin")
@@ -74,7 +74,7 @@ public class UserServiceImpl_UnitTest {
     @Test
     void shouldFindUserById_thenThrowException_ifNotExists(){
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-        Throwable throwable = catchThrowable(() -> userService.listById(1L));
+        Throwable throwable = catchThrowable(() -> userService.getById(1L));
         //then assert
         assertThat(throwable).isInstanceOf(UserNotFoundException.class);
         assertThat(throwable.getMessage()).isEqualTo("User not found");
