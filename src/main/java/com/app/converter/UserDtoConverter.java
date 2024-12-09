@@ -15,6 +15,6 @@ public class UserDtoConverter implements Converter<String, UserDto> {
     @Override
     public UserDto convert(String source) {
         if (source.isEmpty()) return null;
-        return userService.listById(Long.parseLong(source));
+        return userService.getById(Long.parseLong(source));
     }
 }
