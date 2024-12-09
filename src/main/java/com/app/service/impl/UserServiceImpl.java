@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDto listById(Long id) {
+    public UserDto getById(Long id) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         UserDto dto = mapperUtil.convert(user, new UserDto());
         dto.setOnlyAdmin(dto.getRole().getDescription().equals("Admin") && this.checkIfOnlyAdmin(dto));
