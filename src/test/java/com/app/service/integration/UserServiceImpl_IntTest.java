@@ -41,13 +41,13 @@ public class UserServiceImpl_IntTest {
     @Test
     void testFindById(){
         Long id= 1L;
-        UserDto userDto = userService.listById(id);
+        UserDto userDto = userService.getById(id);
         assertThat(userDto).isNotNull();
         assertThat(userDto.getId()).isEqualTo(id);
     }
     @Test
     void testFindById_notFound(){
-        Throwable throwable = catchThrowable(() -> userService.listById(0L));
+        Throwable throwable = catchThrowable(() -> userService.getById(0L));
         assertThat(throwable).isInstanceOf(UserNotFoundException.class);
         assertThat(throwable.getMessage()).isEqualTo("User not found");
     }
@@ -93,7 +93,7 @@ public class UserServiceImpl_IntTest {
 
     @Test
     void updateUser(){
-        UserDto userDto = userService.listById(2L);
+        UserDto userDto = userService.getById(2L);
         userDto.setUsername("test@greentech.com");
         userDto.setPassword("test");
 
