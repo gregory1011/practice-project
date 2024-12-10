@@ -6,6 +6,7 @@ import com.app.enums.ClientVendorType;
 import com.app.enums.InvoiceType;
 import com.app.service.*;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +17,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/purchaseInvoices")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PurchasesInvoiceController {
 
 
@@ -36,14 +37,14 @@ public class PurchasesInvoiceController {
     @GetMapping("/create")
     public String invoiceCreate(Model model) {
         model.addAttribute("newPurchaseInvoice", invoiceService.generateNewInvoiceDto(InvoiceType.PURCHASE));
-        model.addAttribute("vendors", clientVendorService.listAllByClientVendorTypeAndCompanyId(ClientVendorType.VENDOR));
+        model.addAttribute("vendors", clientVendorService.listAllByClientVendorType(ClientVendorType.VENDOR));
         return "invoice/purchase-invoice-create";
     }
 
     @PostMapping("/create")
     public String invoicePost(@Valid @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("vendors", clientVendorService.listAllByClientVendorTypeAndCompanyId(ClientVendorType.VENDOR));
+            model.addAttribute("vendors", clientVendorService.listAllByClientVendorType(ClientVendorType.VENDOR));
             return "invoice/purchase-invoice-create";
         }
         InvoiceDto dto = invoiceService.saveInvoice(invoiceDto, InvoiceType.PURCHASE);
@@ -53,7 +54,7 @@ public class PurchasesInvoiceController {
     @GetMapping("/update/{id}")
     public String invoiceUpdate(@PathVariable("id") Long id, Model model) {
         model.addAttribute("invoice", invoiceService.listInvoiceById(id));
-        model.addAttribute("vendors", clientVendorService.listAllByClientVendorTypeAndCompanyId(ClientVendorType.VENDOR));
+        model.addAttribute("vendors", clientVendorService.listAllByClientVendorType(ClientVendorType.VENDOR));
         model.addAttribute("products", productService.listAllProducts());
         model.addAttribute("newInvoiceProduct", new InvoiceProductDto());
         model.addAttribute("invoiceProducts", invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(id));
@@ -70,7 +71,7 @@ public class PurchasesInvoiceController {
     public String addProduct(@PathVariable("invoiceId") Long invoiceId,@Valid @ModelAttribute("newInvoiceProduct") InvoiceProductDto dto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("invoice", invoiceService.listInvoiceById(invoiceId));
-            model.addAttribute("vendors", clientVendorService.listAllByClientVendorTypeAndCompanyId(ClientVendorType.VENDOR));
+            model.addAttribute("vendors", clientVendorService.listAllByClientVendorType(ClientVendorType.VENDOR));
             model.addAttribute("products", productService.listAllProducts());
             model.addAttribute("invoiceProducts", invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(invoiceId));
             return "invoice/purchase-invoice-update";
@@ -105,9 +106,11 @@ public class PurchasesInvoiceController {
         return "invoice/invoice_print";
     }
 
-//    @ModelAttribute
-//    private void commonAttributes(Model model) {
-//        model.addAttribute("title", "Cydeo Accounting-Purchase Invoice");
-//    }
+    @ModelAttribute
+    private void commonAttributes(Model model) {
+//        model.addAttribute("vendors", clientVendorService.listByClientVendorType(ClientVendorType.VENDOR));
+//        model.addAttribute("products", productService.listAllProducts());
+        model.addAttribute("title", "Accounting-App Purchase Invoice");
+    }
 
 }
