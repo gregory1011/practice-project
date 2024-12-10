@@ -2,6 +2,7 @@ package com.app.controller;
 
 import com.app.service.ReportService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/reports")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReportController {
 
 
