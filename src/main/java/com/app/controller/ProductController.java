@@ -7,6 +7,7 @@ import com.app.enums.ProductUnit;
 import com.app.service.CategoryService;
 import com.app.service.ProductService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 
 @Controller
 @RequestMapping ("/products")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
@@ -78,4 +79,10 @@ public class ProductController {
         return "redirect:/products/list";
     }
 
+    @ModelAttribute
+    private void commonAttributes(Model model) {
+//        model.addAttribute("categories", categoryService.listAllCategories());
+//        model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+        model.addAttribute("title", "Accounting-App Products");
+    }
 }
