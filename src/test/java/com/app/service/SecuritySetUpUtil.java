@@ -6,6 +6,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 
+
 public class SecuritySetUpUtil {
 
     public static void setUpSecurityContext(Long userId, String username){
