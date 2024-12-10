@@ -3,9 +3,98 @@ package com.app.service;
 import com.app.dto.*;
 import com.app.enums.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+
 
 public class TestDocInitializer {
 
+    public static AddressDto getAddress(){
+        return AddressDto.builder()
+                .id(1L)
+                .addressLine1("188 Glendale Rd")
+                .addressLine2("Suite 3")
+                .city("Pomegranate")
+                .state("California")
+                .zipCode("90302")
+                .country("US")
+                .build();
+    }
+    public static CategoryDto getCategory(){
+        return CategoryDto.builder()
+                .id(1L)
+                .description("Test Category")
+                .company(getCompany(CompanyStatus.ACTIVE))
+                .build();
+    }
+    public static ClientVendorDto getClientVendorDto(ClientVendorType type){
+        return ClientVendorDto.builder()
+                .id(1L)
+                .clientVendorType(type)
+                .clientVendorName("test")
+                .address(getAddress())
+                .company(getCompany(CompanyStatus.ACTIVE))
+                .website("www.test.net")
+                .phone("123-456-1233")
+                .build();
+    }
+    public static CompanyDto getCompany(CompanyStatus status) {
+        return CompanyDto.builder()
+                .id(1L)
+                .title("Test_Company")
+                .website("www.test.net")
+                .phone("213-440-9044")
+                .companyStatus(status)
+                .address(getAddress())
+                .build();
+    }
+    public static InvoiceDto getInvoiceDto(InvoiceStatus status, InvoiceType type){
+        return InvoiceDto.builder()
+                .id(1L)
+                .invoiceNo("T-100")
+                .clientVendor(getClientVendorDto(ClientVendorType.CLIENT))
+                .invoiceStatus(status)
+                .invoiceType(type)
+                .date(LocalDate.of(2024,1,1))
+                .price(BigDecimal.valueOf(100))
+                .tax(BigDecimal.TEN)
+                .total(BigDecimal.TEN.multiply(BigDecimal.valueOf(100)))
+                .build();
+    }
+    public static InvoiceProductDto getInvoiceProductDto(){
+        return InvoiceProductDto.builder()
+                .id(1L)
+                .invoice(new InvoiceDto())
+                .product(getProductDto())
+                .price(BigDecimal.TEN)
+                .tax(10)
+                .quantity(5)
+                .build();
+    }
+    public static PaymentDto getPaymentDto(){
+        return PaymentDto.builder()
+                .amount(BigDecimal.TEN)
+                .month(Month.JULY)
+                .year(2024)
+                .paymentDate(LocalDate.now())
+                .isPaid(true)
+                .company(getCompany(CompanyStatus.ACTIVE))
+                .description("Test Payment")
+                .id(1L)
+                .companyStripeId("1K12Oxfr#401")
+                .build();
+    }
+    public static ProductDto getProductDto(){
+        return ProductDto.builder()
+                .id(1L)
+                .name("test_product")
+                .category(getCategory())
+                .productUnit(ProductUnit.KG)
+                .lowLimitAlert(5)
+                .quantityInStock(10)
+                .build();
+    }
     public static UserDto getUser(String role){
         return UserDto.builder()
                 .id(1L)
@@ -21,57 +110,5 @@ public class TestDocInitializer {
                 .build();
     }
 
-    public static CompanyDto getCompany(CompanyStatus status) {
-        return CompanyDto.builder()
-                .id(1L)
-                .title("Test_Company")
-                .website("www.test.net")
-                .phone("213-440-9044")
-                .companyStatus(status)
-                .address(new AddressDto())
-                .build();
-    }
-
-    public static CategoryDto getCategory(){
-        return CategoryDto.builder()
-                .id(1L)
-                .company(getCompany(CompanyStatus.ACTIVE))
-                .description("Test Category")
-                .build();
-    }
-
-    public static ClientVendorDto getClientVendorDto(ClientVendorType clientVendorType){
-        ClientVendorDto clientVendorDto = new ClientVendorDto();
-        clientVendorDto.setId(1L);
-        clientVendorDto.setCompany(getCompany(CompanyStatus.ACTIVE));
-        clientVendorDto.setPhone("123-456-1233");
-        clientVendorDto.setWebsite("www.test.net");
-        clientVendorDto.setClientVendorType(clientVendorType);
-        clientVendorDto.setAddress(getAddress());
-        clientVendorDto.setCompany(getCompany(CompanyStatus.ACTIVE));
-        return clientVendorDto;
-    }
-
-    public static AddressDto getAddress(){
-        AddressDto addressDto = new AddressDto();
-        addressDto.setId(1L);
-        addressDto.setCountry("US");
-        addressDto.setAddressLine1("120 West Ave");
-        addressDto.setCity("New York");
-        addressDto.setState("NY");
-        addressDto.setAddressLine2("Suite 10");
-        addressDto.setZipCode("90904");
-        return addressDto;
-    }
-
-    public static InvoiceDto getInvoiceDto(InvoiceStatus status, InvoiceType invoiceType){
-        InvoiceDto invoiceDto = new InvoiceDto();
-        invoiceDto.setId(1L);
-        invoiceDto.setCompany(getCompany(CompanyStatus.ACTIVE));
-        invoiceDto.setInvoiceNo("P-123");
-        invoiceDto.setInvoiceStatus(status);
-        invoiceDto.setInvoiceType(invoiceType);
-        return invoiceDto;
-    }
 
 }
