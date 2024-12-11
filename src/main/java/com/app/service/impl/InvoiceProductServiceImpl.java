@@ -9,10 +9,7 @@ import com.app.enums.InvoiceStatus;
 import com.app.exceptions.InvoiceProductNotFoundException;
 import com.app.exceptions.ProductNotFoundException;
 import com.app.repository.InvoiceProductRepository;
-import com.app.service.InvoiceProductService;
-import com.app.service.InvoiceService;
-import com.app.service.ProductService;
-import com.app.service.SecurityService;
+import com.app.service.*;
 import com.app.util.MapperUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -27,21 +24,22 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     private final InvoiceProductRepository invoiceProductRepository;
     private final MapperUtil mapperUtil;
-    private final  InvoiceService invoiceService;
+    private final InvoiceService invoiceService;
     private final ProductService productService;
-    private final SecurityService securityService;
+    private final CompanyService companyService;
 
-    public InvoiceProductServiceImpl(@Lazy InvoiceService invoiceService, InvoiceProductRepository invoiceProductRepository, MapperUtil mapperUtil, ProductService productService, SecurityService securityService) {
+
+    public InvoiceProductServiceImpl(@Lazy InvoiceService invoiceService, InvoiceProductRepository invoiceProductRepository, MapperUtil mapperUtil, ProductService productService, CompanyService companyService) {
         this.invoiceProductRepository = invoiceProductRepository;
         this.mapperUtil = mapperUtil;
         this.invoiceService = invoiceService;
         this.productService = productService;
-        this.securityService = securityService;
+        this.companyService = companyService;
     }
 
 
     @Override
-    public InvoiceProductDto listInvoiceProductById(Long id) {
+    public InvoiceProductDto findById(Long id) {
         InvoiceProduct invoiceProduct = invoiceProductRepository.findById(id).orElseThrow(InvoiceProductNotFoundException::new);
         return mapperUtil.convert(invoiceProduct, new InvoiceProductDto());
     }
@@ -65,9 +63,9 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public List<InvoiceProductDto> listAllApprovedInvoiceProductsOfCompany() {
-        Long companyID = securityService.getLoggedInUser().getCompany().getId();
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
         return invoiceProductRepository.findAll().stream()
-                .filter(m->m.getInvoice().getCompany().getId().equals(companyID))
+                .filter(m->m.getInvoice().getCompany().getId().equals(companyId))
                 .filter(m->m.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
                 .map(each->mapperUtil.convert(each, new InvoiceProductDto())).toList();
     }
@@ -129,7 +127,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     private BigDecimal calculateCost(Long productId, int salesQuantity) {
-        Long companyId = securityService.getLoggedInUser().getCompany().getId();
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
         List<InvoiceProduct> list = invoiceProductRepository.getApprovedPurchaseInvoiceProducts(companyId, productId);
         BigDecimal totalCost = BigDecimal.ZERO;
         for (InvoiceProduct each : list) {
