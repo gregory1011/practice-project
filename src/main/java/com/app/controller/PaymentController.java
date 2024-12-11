@@ -6,6 +6,7 @@ import com.app.dto.common.ChargeRequest;
 import com.app.service.PaymentService;
 import com.app.service.SecurityService;
 import com.stripe.exception.StripeException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,14 +17,12 @@ import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/payments")
+@RequiredArgsConstructor
 public class PaymentController {
 
     private final PaymentService paymentService;
     private final SecurityService securityService;
-    public PaymentController(PaymentService paymentService, SecurityService securityService) {
-        this.paymentService = paymentService;
-        this.securityService = securityService;
-    }
+
 
     @Value("${api.stripe.publicKey}")
     private String getStripePublicKey;
