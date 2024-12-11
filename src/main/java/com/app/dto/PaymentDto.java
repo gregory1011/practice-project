@@ -7,9 +7,8 @@ import java.time.LocalDate;
 import java.time.Month;
 
 
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentDto {
