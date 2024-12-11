@@ -2,7 +2,7 @@ package com.app.entity.common;
 
 import com.app.entity.User;
 import com.app.enums.CompanyStatus;
-import org.springframework.context.annotation.Lazy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
 
     private final User user;
 
-    public UserPrincipal(@Lazy User user) {
-        this.user = user;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
