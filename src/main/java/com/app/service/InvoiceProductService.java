@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface InvoiceProductService {
 
-    InvoiceProductDto listInvoiceProductById(Long id);
+    InvoiceProductDto findById(Long id);
     List<InvoiceProductDto> listAllByInvoiceIdAndCalculateTotalPrice(Long id);
     List<InvoiceProductDto> listInvoiceProductByInvoiceId(Long invoiceId);
     List<InvoiceProductDto> listAllApprovedInvoiceProductsOfCompany();
