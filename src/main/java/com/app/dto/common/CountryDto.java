@@ -4,16 +4,12 @@ package com.app.dto.common;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.annotation.Generated;
 
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Generated("jsonschema2pojo")
@@ -22,5 +18,5 @@ import javax.annotation.Generated;
 public class CountryDto {
 
     @JsonProperty("country_name")
-    String countryName;
+    private String countryName;
 }
