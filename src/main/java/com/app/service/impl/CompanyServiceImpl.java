@@ -10,7 +10,7 @@ import com.app.repository.CompanyRepository;
 import com.app.service.CompanyService;
 import com.app.service.SecurityService;
 import com.app.util.MapperUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.Objects;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
@@ -87,10 +87,10 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public boolean titleExist(CompanyDto dto) {
-        Company company = companyRepository.findByTitle(dto.getTitle()).orElse(null);
-        if (company == null) return false;
-//        return !company.getTitle().equals(dto.getTitle());
-        return !Objects.equals(dto.getId(), company.getId()); // we use Object to assert because of optional
+        Company result = companyRepository.findByTitle(dto.getTitle()).orElse(null);
+        if (result == null) return false; // both null and no data
+//        return !result.getTitle().equals(dto.getTitle());
+        return !Objects.equals(dto.getId(), result.getId()); // we use Object to assert because of optional
     }
 
 }
