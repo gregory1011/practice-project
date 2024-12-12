@@ -6,9 +6,8 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceProductDto {
