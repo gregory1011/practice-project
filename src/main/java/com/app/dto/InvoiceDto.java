@@ -11,9 +11,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceDto {
