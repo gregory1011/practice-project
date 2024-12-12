@@ -2,13 +2,12 @@ package com.app.dto.common;
 
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+
+@Data
 @Builder
 public class DefaultExceptionMessageDto {
 
-    String message;
+    private String message;
 }
