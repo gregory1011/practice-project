@@ -14,4 +14,5 @@ public interface CompanyService {
     CompanyDto deactivateCompany(Long id);
     CompanyDto updateCompany(CompanyDto dto);
     boolean titleExist(CompanyDto dto);
+
 }
