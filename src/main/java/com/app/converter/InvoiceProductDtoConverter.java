@@ -16,7 +16,7 @@ public class InvoiceProductDtoConverter implements Converter<String, InvoiceProd
     @Override
     public InvoiceProductDto convert(String source) {
         if (source.isEmpty()) return null;
-        return invoiceProductService.listInvoiceProductById(Long.parseLong(source));
+        return invoiceProductService.findById(Long.parseLong(source));
     }
 
 
