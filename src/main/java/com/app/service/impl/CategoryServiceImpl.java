@@ -8,7 +8,6 @@ import com.app.repository.CategoryRepository;
 import com.app.service.CategoryService;
 import com.app.service.SecurityService;
 import com.app.util.MapperUtil;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
