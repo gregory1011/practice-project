@@ -13,5 +13,5 @@ public interface ClientVendorService {
     ClientVendorDto saveClientVendor(ClientVendorDto clientVendorDto);
     ClientVendorDto updateClientVendor(ClientVendorDto clientVendor);
     void deleteClientVendor(Long id);
-    boolean isClientVendorNameExists(String clientVendorName);
+    boolean isClientVendorNameExists(ClientVendorDto dto);
 }
