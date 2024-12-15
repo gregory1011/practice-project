@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface ClientVendorRepository extends JpaRepository<ClientVendor, Long> {
 
     List<ClientVendor> findByCompanyId(Long companyId);
-    Optional<ClientVendor> existsByCompanyIdAndClientVendorName(Long companyId, String clientVendorName);
+    Optional<ClientVendor> findByCompanyIdAndClientVendorName(Long companyId, String clientVendorName);
 }
