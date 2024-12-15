@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class ClientVendorImpl_UnitTest {
+public class ClientVendorServiceImpl_UnitTest {
 
     @Mock
     private ClientVendorRepository clientVendorRepository;
@@ -156,9 +156,9 @@ public class ClientVendorImpl_UnitTest {
         clientVendorDto.setId(1L);
         clientVendor.setId(2L);
         when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
-        when(clientVendorRepository.existsByCompanyIdAndClientVendorName(anyLong(), anyString())).thenReturn(Optional.of(clientVendor));
+        when(clientVendorRepository.findByCompanyIdAndClientVendorName(anyLong(), anyString())).thenReturn(Optional.of(clientVendor));
 
-        boolean result = clientVendorService.isClientVendorNameExists(clientVendorDto.getClientVendorName());
+        boolean result = clientVendorService.isClientVendorNameExists(clientVendorDto);
         assertTrue(result);
     }
     @Test
@@ -166,9 +166,9 @@ public class ClientVendorImpl_UnitTest {
         clientVendorDto.setId(1L);
         clientVendor.setId(2L);
         when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
-        when(clientVendorRepository.existsByCompanyIdAndClientVendorName(anyLong(), anyString())).thenReturn(Optional.empty());
+        when(clientVendorRepository.findByCompanyIdAndClientVendorName(anyLong(), anyString())).thenReturn(Optional.empty());
 
-        boolean result = clientVendorService.isClientVendorNameExists(clientVendorDto.getClientVendorName());
+        boolean result = clientVendorService.isClientVendorNameExists(clientVendorDto);
         assertFalse(result);
     }
 
