@@ -4,6 +4,7 @@ import com.app.dto.CompanyDto;
 import com.app.service.AddressService;
 import com.app.service.CompanyService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +14,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/companies")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CompanyController {
 
     private final CompanyService companyService;
