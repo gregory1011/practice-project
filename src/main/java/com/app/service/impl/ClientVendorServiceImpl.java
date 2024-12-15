@@ -1,26 +1,26 @@
 package com.app.service.impl;
 
 import com.app.dto.ClientVendorDto;
-import com.app.dto.CompanyDto;
 import com.app.entity.ClientVendor;
 import com.app.enums.ClientVendorType;
 import com.app.exceptions.ClientVendorNotFoundException;
 import com.app.repository.ClientVendorRepository;
 import com.app.service.ClientVendorService;
 import com.app.service.CompanyService;
-import com.app.service.SecurityService;
 import com.app.util.MapperUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+//import static org.junit.jupiter.api.Assertions.*;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ClientVendorServiceImpl implements ClientVendorService {
 
     private final ClientVendorRepository clientVendorRepository;
@@ -29,7 +29,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
 
     @Override
-    @Transactional(readOnly = true) //
+    @Transactional(readOnly = true)
     public ClientVendorDto findById(Long id) {
         ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(ClientVendorNotFoundException::new);
         return mapperUtil.convert(clientVendor,new ClientVendorDto());
@@ -60,9 +60,9 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
-    public ClientVendorDto saveClientVendor(ClientVendorDto clientVendorDto) {
-        clientVendorDto.setCompany(companyService.getCompanyByLoggedInUser());
-        ClientVendor saved = clientVendorRepository.save(mapperUtil.convert(clientVendorDto, new ClientVendor()));
+    public ClientVendorDto saveClientVendor(ClientVendorDto dto) {
+        dto.setCompany(companyService.getCompanyByLoggedInUser());
+        ClientVendor saved = clientVendorRepository.save(mapperUtil.convert(dto, new ClientVendor()));
         return mapperUtil.convert(saved, new ClientVendorDto());
     }
 
@@ -87,10 +87,12 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     }
 
     @Override
-    public boolean isClientVendorNameExists(String clientVendorName) {
+//    @Transactional(readOnly = true)
+    public boolean isClientVendorNameExists(ClientVendorDto dto) {
         Long companyId = companyService.getCompanyByLoggedInUser().getId();
-        Optional<ClientVendor> clientVendor = clientVendorRepository.existsByCompanyIdAndClientVendorName(companyId, clientVendorName);
-        return clientVendor.isPresent(); // if exists return true, else false
+        ClientVendor result = clientVendorRepository.findByCompanyIdAndClientVendorName(companyId, dto.getClientVendorName()).orElse(null);
+        if (result == null) return false;
+        return !Objects.equals(dto.getId(), result.getId());
     }
 
 }
