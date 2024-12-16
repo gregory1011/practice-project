@@ -7,6 +7,7 @@ import com.app.dto.common.ExchangeRateDto;
 import com.app.enums.InvoiceType;
 import com.app.service.DashboardService;
 import com.app.service.InvoiceService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -19,20 +20,15 @@ import java.util.Map;
 import java.util.Objects;
 
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
 
     private final InvoiceService invoiceService;
     private final CurrencyExchangeClient currencyExchange;
 
-    public DashboardServiceImpl(InvoiceService invoiceService, CurrencyExchangeClient currencyExchange) {
-        this.invoiceService = invoiceService;
-        this.currencyExchange = currencyExchange;
-    }
-
     private  CurrencyDto cachedCurrencyDto;
-
 
     @Scheduled(fixedRate = 10_000) // every 100 seconds from milliseconds
     public void scheduleFetchCurrencyRate(){
