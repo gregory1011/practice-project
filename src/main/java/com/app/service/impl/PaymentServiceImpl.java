@@ -17,9 +17,7 @@ import com.stripe.model.Charge;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
-import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -73,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
         Stripe.apiKey= secretKey;
 
         // write custom description
-        String description= "Cydeo accounting subscription fee for "+payment.getMonth()+ " "+payment.getYear()+" -> $"+payment.getAmount();
+        String description= "Company accounting subscription fee for "+payment.getMonth()+ " "+payment.getYear()+" -> $"+payment.getAmount();
         chargeRequest.setDescription(description);
 
         // make map for the request header api object;
