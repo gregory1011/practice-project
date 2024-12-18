@@ -76,9 +76,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     public List<InvoiceProductDto> listAllApprovedInvoiceProductsOfCompany() {
         CompanyDto companyDto = companyService.getCompanyByLoggedInUser();
         return invoiceProductRepository.retrieveByInvoiceCompanyIdAndAndInvoiceStatus(companyDto.getId(), InvoiceStatus.APPROVED)
-                        .stream()
-                        .map(each -> mapperUtil.convert(each, new InvoiceProductDto())).toList();
-
+                        .stream().map(each -> mapperUtil.convert(each, new InvoiceProductDto())).toList();
 //        invoiceProductRepository.findAll().stream()
 //                .filter(m -> m.getInvoice().getCompany().getId().equals(companyDto.getId()))
 //                .filter(m -> m.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
@@ -86,18 +84,20 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
-    public void saveInvoiceProduct(Long invoiceId, InvoiceProductDto dto) {
+    public InvoiceProductDto saveInvoiceProduct(Long invoiceId, InvoiceProductDto dto) {
         Invoice invoice = mapperUtil.convert(invoiceService.findById(invoiceId), new Invoice());
         InvoiceProduct invoiceProduct = mapperUtil.convert(dto, new InvoiceProduct());
         invoiceProduct.setInvoice(invoice);
-        mapperUtil.convert(invoiceProductRepository.save(invoiceProduct), new InvoiceProductDto());
+        InvoiceProduct saved = invoiceProductRepository.save(invoiceProduct);
+       return  mapperUtil.convert(saved, new InvoiceProductDto());
     }
 
     @Override
-    public void deleteInvoiceProduct(Long invoiceProductId) {
-        InvoiceProduct invoiceProduct = invoiceProductRepository.findById(invoiceProductId).orElseThrow();
+    public InvoiceProductDto deleteInvoiceProduct(Long invoiceProductId) {
+        InvoiceProduct invoiceProduct = invoiceProductRepository.findById(invoiceProductId).orElseThrow(InvoiceProductNotFoundException::new);
         invoiceProduct.setIsDeleted(true);
-        invoiceProductRepository.save(invoiceProduct);
+        InvoiceProduct deleted = invoiceProductRepository.save(invoiceProduct);
+        return mapperUtil.convert(deleted, new InvoiceProductDto());
     }
 
     @Override
