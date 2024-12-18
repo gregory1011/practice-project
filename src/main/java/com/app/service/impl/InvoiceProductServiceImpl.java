@@ -58,21 +58,31 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     @Override
     public List<InvoiceProductDto> listInvoiceProductByInvoiceId(Long invoiceId) {
         List<InvoiceProduct> list = invoiceProductRepository.findAllByInvoiceId(invoiceId);
-        return list.stream().map(each->mapperUtil.convert(each, new InvoiceProductDto())).toList();
+        return list.stream().map(each -> mapperUtil.convert(each, new InvoiceProductDto())).toList();
+    }
+
+    @Override
+    public InvoiceProductDto add(InvoiceProductDto invoiceProductDto, Long invoiceId) {
+        InvoiceProduct invoiceProduct = mapperUtil.convert(invoiceProductDto, new InvoiceProduct());
+        Invoice invoice = mapperUtil.convert(invoiceService.findById(invoiceId), new Invoice());
+        invoiceProduct.setInvoice(invoice);
+//        invoiceProduct.setRemainingQuantity(0);
+        InvoiceProduct saved = invoiceProductRepository.save(invoiceProduct);
+        return mapperUtil.convert(saved, invoiceProductDto);
     }
 
     @Override
     public List<InvoiceProductDto> listAllApprovedInvoiceProductsOfCompany() {
         Long companyId = companyService.getCompanyByLoggedInUser().getId();
         return invoiceProductRepository.findAll().stream()
-                .filter(m->m.getInvoice().getCompany().getId().equals(companyId))
-                .filter(m->m.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
-                .map(each->mapperUtil.convert(each, new InvoiceProductDto())).toList();
+                .filter(m -> m.getInvoice().getCompany().getId().equals(companyId))
+                .filter(m -> m.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
+                .map(each -> mapperUtil.convert(each, new InvoiceProductDto())).toList();
     }
 
     @Override
     public void saveInvoiceProduct(Long invoiceId, InvoiceProductDto dto) {
-        Invoice invoice = mapperUtil.convert(invoiceService.listInvoiceById(invoiceId), new Invoice());
+        Invoice invoice = mapperUtil.convert(invoiceService.findById(invoiceId), new Invoice());
         InvoiceProduct invoiceProduct = mapperUtil.convert(dto, new InvoiceProduct());
         invoiceProduct.setInvoice(invoice);
         mapperUtil.convert(invoiceProductRepository.save(invoiceProduct), new InvoiceProductDto());
@@ -88,7 +98,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     @Override
     public void updateRemainingQuantityUponPurchaseApproval(Long id) {
         List<InvoiceProduct> list = invoiceProductRepository.findAllByInvoiceId(id);
-        list.forEach(each->{
+        list.forEach(each -> {
             each.setRemainingQuantity(each.getQuantity());
             invoiceProductRepository.save(each);
         });
@@ -97,7 +107,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     @Override
     public void updateQuantityInStockPurchase(Long id) {
         List<Product> list = invoiceProductRepository.listProductsByInvoiceId(id);
-        list.forEach(each->{
+        list.forEach(each -> {
             Integer sumQuantityOfProducts = invoiceProductRepository.sumQuantityOfProducts(id, each.getId());
             each.setQuantityInStock(each.getQuantityInStock() + sumQuantityOfProducts);
             productService.saveProduct(mapperUtil.convert(each, new ProductDto()));
@@ -107,9 +117,10 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     @Override
     public void updateQuantityInStockSale(Long id) {
         List<Product> list = invoiceProductRepository.listProductsByInvoiceId(id);
-        list.forEach(each->{
+        list.forEach(each -> {
             final int stock = each.getQuantityInStock() - invoiceProductRepository.sumQuantityOfProducts(id, each.getId());
-            if (stock < 0) throw new ProductNotFoundException("Stock of "+ each.getName() +" is not enough to approve this invoice. Please update the invoice.");
+            if (stock < 0)
+                throw new ProductNotFoundException("Stock of " + each.getName() + " is not enough to approve this invoice. Please update the invoice.");
             else each.setQuantityInStock(stock);
             productService.saveProduct(mapperUtil.convert(each, new ProductDto()));
         });
@@ -118,7 +129,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     @Override
     public void calculateProfitOrLoss(Long id) {
         List<InvoiceProduct> list = invoiceProductRepository.findAllByInvoiceId(id);
-        list.forEach(each->{
+        list.forEach(each -> {
             Long productId = each.getProduct().getId();
             BigDecimal profitLoss = getTotalPriceWithTax(each).subtract(calculateCost(productId, each.getQuantity()));
             each.setProfitLoss(profitLoss);
@@ -132,16 +143,16 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         BigDecimal totalCost = BigDecimal.ZERO;
         for (InvoiceProduct each : list) {
             int remainingQty = each.getRemainingQuantity() - salesQuantity;
-            if (remainingQty <= 0){
+            if (remainingQty <= 0) {
                 BigDecimal costWithoutTax = each.getPrice().multiply(BigDecimal.valueOf(each.getRemainingQuantity()));
                 BigDecimal taxAmount = costWithoutTax.multiply(BigDecimal.valueOf(each.getTax())).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
                 BigDecimal costWithTax = costWithoutTax.add(taxAmount);
-                salesQuantity= salesQuantity -each.getRemainingQuantity();
+                salesQuantity = salesQuantity - each.getRemainingQuantity();
                 each.setRemainingQuantity(0);
                 totalCost = totalCost.add(costWithTax);
                 invoiceProductRepository.save(each);
                 if (remainingQty == 0) break;
-            }else {
+            } else {
                 BigDecimal costWithoutTax = each.getPrice().multiply(BigDecimal.valueOf(salesQuantity));
                 BigDecimal taxAmount = costWithoutTax.multiply(BigDecimal.valueOf(each.getTax())).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
                 BigDecimal costWithTax = costWithoutTax.add(taxAmount);
@@ -156,8 +167,8 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     private BigDecimal getTotalPriceWithTax(InvoiceProduct invoiceProduct) {
-        BigDecimal totalPrice= invoiceProduct.getPrice().multiply(BigDecimal.valueOf(invoiceProduct.getQuantity()));
-        BigDecimal totalTax= totalPrice.multiply(BigDecimal.valueOf(invoiceProduct.getTax() / 100d));
+        BigDecimal totalPrice = invoiceProduct.getPrice().multiply(BigDecimal.valueOf(invoiceProduct.getQuantity()));
+        BigDecimal totalTax = totalPrice.multiply(BigDecimal.valueOf(invoiceProduct.getTax() / 100d));
         return totalPrice.add(totalTax);
     }
 
