@@ -34,7 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceProductService invoiceProductService;
 
     @Override
-    public InvoiceDto listInvoiceById(Long id) {
+    public InvoiceDto findById(Long id) {
         Invoice invoice = invoiceRepository.findById(id).orElseThrow(InvoiceNotFoundException::new);
         return mapperUtil.convert(invoice, new InvoiceDto());
     }
@@ -151,7 +151,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceDto printInvoiceId(Long id) {
-        InvoiceDto invoiceDto = listInvoiceById(id);
+        InvoiceDto invoiceDto = findById(id);
         calculatePricesAndTaxes(invoiceDto);
         return invoiceDto;
     }
