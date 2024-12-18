@@ -53,7 +53,7 @@ public class PurchasesInvoiceController {
 
     @GetMapping("/update/{id}")
     public String invoiceUpdate(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("invoice", invoiceService.listInvoiceById(id));
+        model.addAttribute("invoice", invoiceService.findById(id));
         model.addAttribute("vendors", clientVendorService.listAllByClientVendorType(ClientVendorType.VENDOR));
         model.addAttribute("products", productService.listAllProducts());
         model.addAttribute("newInvoiceProduct", new InvoiceProductDto());
@@ -70,7 +70,7 @@ public class PurchasesInvoiceController {
     @PostMapping("/addInvoiceProduct/{invoiceId}")
     public String addProduct(@PathVariable("invoiceId") Long invoiceId,@Valid @ModelAttribute("newInvoiceProduct") InvoiceProductDto dto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("invoice", invoiceService.listInvoiceById(invoiceId));
+            model.addAttribute("invoice", invoiceService.findById(invoiceId));
             model.addAttribute("vendors", clientVendorService.listAllByClientVendorType(ClientVendorType.VENDOR));
             model.addAttribute("products", productService.listAllProducts());
             model.addAttribute("invoiceProducts", invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(invoiceId));
