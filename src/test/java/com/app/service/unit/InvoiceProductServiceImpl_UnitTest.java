@@ -1,12 +1,18 @@
 package com.app.service.unit;
 
 
+import com.app.dto.CompanyDto;
 import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
+import com.app.entity.Invoice;
 import com.app.entity.InvoiceProduct;
+import com.app.enums.CompanyStatus;
+import com.app.enums.InvoiceStatus;
+import com.app.enums.InvoiceType;
 import com.app.exceptions.InvoiceProductNotFoundException;
 import com.app.repository.InvoiceProductRepository;
 import com.app.service.CompanyService;
+import com.app.service.InvoiceService;
 import com.app.service.ProductService;
 import com.app.service.TestDocInitializer;
 import com.app.service.impl.InvoiceProductServiceImpl;
@@ -21,8 +27,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +41,8 @@ public class InvoiceProductServiceImpl_UnitTest {
 
     @Mock
     private InvoiceProductRepository invoiceProductRepository;
+    @Mock
+    private InvoiceService invoiceService;
     @Mock
     private ProductService productService;
     @Mock
@@ -85,6 +91,48 @@ public class InvoiceProductServiceImpl_UnitTest {
         assertThat(actualList).usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isEqualTo(expectedList);
+    }
+
+    @Test
+    void shouldAddInvoiceProductToInvoice() {
+        // given
+        InvoiceDto invoiceDto = TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.PURCHASE);
+
+        // when
+        when(invoiceService.findById(anyLong())).thenReturn(invoiceDto);
+        when(invoiceProductRepository.save(any())).thenReturn(invoiceProduct);
+
+        InvoiceProductDto result = invoiceProductService.add(invoiceProductDto, 1L);
+
+        // assert
+        assertThat(result).usingRecursiveComparison()
+                .withStrictTypeChecking()
+                .ignoringExpectedNullFields()
+                .ignoringFields("invoice.price", "invoice.tax")
+                .isEqualTo(invoiceProductDto);
+    }
+
+    @Test
+    void shouldGetAllApprovedInvoiceProductsOfCompany() {
+        //given
+        CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
+        Invoice invoice= new Invoice();
+        invoice.setInvoiceType(InvoiceType.PURCHASE);
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoiceProduct.setInvoice(invoice);
+        List<InvoiceProduct> list = List.of(invoiceProduct);
+        //when
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
+        when(invoiceProductRepository.retrieveByInvoiceCompanyIdAndAndInvoiceStatus(anyLong(), eq(InvoiceStatus.APPROVED))).thenReturn(list);
+
+        List<InvoiceProductDto> result = invoiceProductService.listAllApprovedInvoiceProductsOfCompany();
+
+        // assert
+        assertNotNull(list);
+        assertNotNull(result);
+        assertThat(result.get(0).getInvoice().getInvoiceStatus())
+                .usingRecursiveComparison()
+                .isEqualTo(list.get(0).getInvoice().getInvoiceStatus());
     }
 
 
