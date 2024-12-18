@@ -8,6 +8,7 @@ import com.app.entity.InvoiceProduct;
 import com.app.entity.Product;
 import com.app.enums.InvoiceStatus;
 import com.app.exceptions.InvoiceProductNotFoundException;
+import com.app.exceptions.ProductLowLimitAlertException;
 import com.app.exceptions.ProductNotFoundException;
 import com.app.repository.InvoiceProductRepository;
 import com.app.service.*;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -115,7 +117,8 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         list.forEach(each -> {
             Integer sumQuantityOfProducts = invoiceProductRepository.sumQuantityOfProducts(id, each.getId());
             each.setQuantityInStock(each.getQuantityInStock() + sumQuantityOfProducts);
-            productService.saveProduct(mapperUtil.convert(each, new ProductDto()));
+            ProductDto productDto = mapperUtil.convert(each, new ProductDto());
+            productService.saveProduct(productDto);
         });
     }
 
@@ -142,9 +145,21 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         });
     }
 
+    @Override
+    public void checkForLowQuantityAlert(Long invoiceId) {
+        List<Product> products = invoiceProductRepository.listProductsByInvoiceId(invoiceId);
+        List<String> lowQuantityProductList= new ArrayList<>();
+        for (Product product : products){
+            if (product.getQuantityInStock() < product.getLowLimitAlert()) lowQuantityProductList.add(product.getName());
+        }
+        if (!lowQuantityProductList.isEmpty()){
+            throw new ProductLowLimitAlertException("Stock of "+lowQuantityProductList+" decreased below low limit.");
+        }
+    }
+
     private BigDecimal calculateCost(Long productId, int salesQuantity) {
-        Long companyId = companyService.getCompanyByLoggedInUser().getId();
-        List<InvoiceProduct> list = invoiceProductRepository.getApprovedPurchaseInvoiceProducts(companyId, productId);
+        CompanyDto companyDto = companyService.getCompanyByLoggedInUser();
+        List<InvoiceProduct> list = invoiceProductRepository.getApprovedPurchaseInvoiceProducts(companyDto.getId(), productId);
         BigDecimal totalCost = BigDecimal.ZERO;
         for (InvoiceProduct each : list) {
             int remainingQty = each.getRemainingQuantity() - salesQuantity;
