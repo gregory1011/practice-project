@@ -2,6 +2,7 @@ package com.app.repository;
 
 import com.app.entity.InvoiceProduct;
 import com.app.entity.Product;
+import com.app.enums.InvoiceStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,9 @@ import java.util.List;
 public interface InvoiceProductRepository extends JpaRepository<InvoiceProduct, Long> {
 
     List<InvoiceProduct> findAllByInvoiceId(Long id);
+
+    @Query(value = "select ip from invoice_products  ip where ip.invoice.company.id= ?1 and ip.invoice.invoiceStatus= ?2")
+    List<InvoiceProduct> retrieveByInvoiceCompanyIdAndAndInvoiceStatus(Long companyId, InvoiceStatus invoiceStatus);
 
     @Query(value = "SELECT DISTINCT ip.product FROM invoice_products ip WHERE ip.invoice.id = ?1")
     List<Product> listProductsByInvoiceId(Long invoiceId);
