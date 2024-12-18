@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface InvoiceService {
 
-    InvoiceDto listInvoiceById(Long id);
+    InvoiceDto findById(Long id);
     List<InvoiceDto> listAllByInvoiceType(InvoiceType invoiceType);
     List<InvoiceDto> listAllInvoiceByClientVendorId(Long id);
     InvoiceDto generateNewInvoiceDto(InvoiceType invoiceType);
