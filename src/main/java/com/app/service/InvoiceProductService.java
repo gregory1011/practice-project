@@ -9,6 +9,7 @@ public interface InvoiceProductService {
     InvoiceProductDto findById(Long id);
     List<InvoiceProductDto> listAllByInvoiceIdAndCalculateTotalPrice(Long id);
     List<InvoiceProductDto> listInvoiceProductByInvoiceId(Long invoiceId);
+    InvoiceProductDto add(InvoiceProductDto invoiceProductDto, Long invoiceId);
     List<InvoiceProductDto> listAllApprovedInvoiceProductsOfCompany();
     void saveInvoiceProduct(Long invoiceId, InvoiceProductDto dto);
     void deleteInvoiceProduct(Long invoiceProductId);
