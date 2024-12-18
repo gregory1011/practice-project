@@ -1,5 +1,6 @@
 package com.app.service.impl;
 
+import com.app.dto.CompanyDto;
 import com.app.dto.InvoiceProductDto;
 import com.app.dto.ProductDto;
 import com.app.entity.Invoice;
@@ -73,11 +74,15 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     @Override
     public List<InvoiceProductDto> listAllApprovedInvoiceProductsOfCompany() {
-        Long companyId = companyService.getCompanyByLoggedInUser().getId();
-        return invoiceProductRepository.findAll().stream()
-                .filter(m -> m.getInvoice().getCompany().getId().equals(companyId))
-                .filter(m -> m.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
-                .map(each -> mapperUtil.convert(each, new InvoiceProductDto())).toList();
+        CompanyDto companyDto = companyService.getCompanyByLoggedInUser();
+        return invoiceProductRepository.retrieveByInvoiceCompanyIdAndAndInvoiceStatus(companyDto.getId(), InvoiceStatus.APPROVED)
+                        .stream()
+                        .map(each -> mapperUtil.convert(each, new InvoiceProductDto())).toList();
+
+//        invoiceProductRepository.findAll().stream()
+//                .filter(m -> m.getInvoice().getCompany().getId().equals(companyDto.getId()))
+//                .filter(m -> m.getInvoice().getInvoiceStatus().equals(InvoiceStatus.APPROVED))
+//                .map(each -> mapperUtil.convert(each, new InvoiceProductDto())).toList();
     }
 
     @Override
