@@ -4,6 +4,7 @@ package com.app.service.unit;
 import com.app.client.CurrencyExchangeClient;
 import com.app.dto.common.CurrencyDto;
 import com.app.dto.common.ExchangeRateDto;
+import com.app.enums.InvoiceType;
 import com.app.service.InvoiceService;
 import com.app.service.impl.DashboardServiceImpl;
 import lombok.extern.log4j.Log4j2;
@@ -18,12 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 
 @Log4j2
@@ -115,7 +116,21 @@ public class DashboardServiceImpl_UnitTest {
 
     @Test
     void testGetSummaryNumbers() {
+        //given
+        BigDecimal totalCost = BigDecimal.valueOf(5000);
+        BigDecimal totalSales = BigDecimal.valueOf(10000);
+        BigDecimal profitLoss = BigDecimal.valueOf(5000);
 
+        //when
+        when(invoiceService.sumTotal(InvoiceType.PURCHASE)).thenReturn(totalCost);
+        when(invoiceService.sumTotal(InvoiceType.SALES)).thenReturn(totalSales);
+        when(invoiceService.sumProfitLoss()).thenReturn(profitLoss);
+
+        Map<String, BigDecimal> result = dashboardService.getSummaryNumbers();
+        //then
+        assertThat(result).containsEntry("totalCost", totalCost);
+        assertThat(result).containsEntry("totalSales", totalSales);
+        assertThat(result).containsEntry("profitLoss", profitLoss);
     }
 
 }
