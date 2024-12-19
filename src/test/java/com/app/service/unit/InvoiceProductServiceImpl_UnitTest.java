@@ -4,12 +4,16 @@ package com.app.service.unit;
 import com.app.dto.CompanyDto;
 import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
+import com.app.dto.ProductDto;
 import com.app.entity.Invoice;
 import com.app.entity.InvoiceProduct;
+import com.app.entity.Product;
 import com.app.enums.CompanyStatus;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
 import com.app.exceptions.InvoiceProductNotFoundException;
+import com.app.exceptions.ProductLowLimitAlertException;
+import com.app.exceptions.ProductNotFoundException;
 import com.app.repository.InvoiceProductRepository;
 import com.app.service.CompanyService;
 import com.app.service.InvoiceService;
@@ -44,7 +48,7 @@ public class InvoiceProductServiceImpl_UnitTest {
     @Mock
     private InvoiceService invoiceService;
     @Mock
-    private ProductService productService;
+    private ProductService productService; // this is being used when interacted with
     @Mock
     private CompanyService companyService;
     @Spy
@@ -54,10 +58,18 @@ public class InvoiceProductServiceImpl_UnitTest {
 
     private InvoiceProduct invoiceProduct;
     private InvoiceProductDto invoiceProductDto;
+    private InvoiceDto invoiceDto;
+    private Invoice invoice;
+    private ProductDto productDto;
+    private Product product;
     @BeforeEach
     void setUp() {
         invoiceProductDto= TestDocInitializer.getInvoiceProductDto();
         invoiceProduct= mapperUtil.convert(invoiceProductDto, new InvoiceProduct());
+        invoiceDto= TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.PURCHASE);
+        invoice= mapperUtil.convert(invoiceDto, new Invoice());
+        productDto= TestDocInitializer.getProductDto();
+        product= mapperUtil.convert(productDto, new Product());
     }
 
     @Test
@@ -96,8 +108,7 @@ public class InvoiceProductServiceImpl_UnitTest {
     @Test
     void shouldAddInvoiceProductToInvoice() {
         // given
-        InvoiceDto invoiceDto = TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.PURCHASE);
-
+        invoiceProduct.setInvoice(invoice);
         // when
         when(invoiceService.findById(anyLong())).thenReturn(invoiceDto);
         when(invoiceProductRepository.save(any())).thenReturn(invoiceProduct);
@@ -116,9 +127,6 @@ public class InvoiceProductServiceImpl_UnitTest {
     void shouldGetAllApprovedInvoiceProductsOfCompany() {
         //given
         CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
-        Invoice invoice= new Invoice();
-        invoice.setInvoiceType(InvoiceType.PURCHASE);
-        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
         invoiceProduct.setInvoice(invoice);
         List<InvoiceProduct> list = List.of(invoiceProduct);
         //when
@@ -135,5 +143,114 @@ public class InvoiceProductServiceImpl_UnitTest {
                 .isEqualTo(list.get(0).getInvoice().getInvoiceStatus());
     }
 
+    @Test
+    void saveShouldAddInvoiceProductToInvoiceList() {
+        //given
+        invoiceProduct.setInvoice(invoice);
+        //when
+        when(invoiceService.findById(anyLong())).thenReturn(invoiceDto);
+        when(invoiceProductRepository.save(any())).thenReturn(invoiceProduct);
 
+        InvoiceProductDto result = invoiceProductService.saveInvoiceProduct(1L, invoiceProductDto);
+        // assert
+        assertThat(result).usingRecursiveComparison()
+                .withStrictTypeChecking()
+                .ignoringExpectedNullFields()
+                .ignoringFields("invoice.price", "invoice.tax")
+                .isEqualTo(invoiceProductDto);
+    }
+
+    @Test
+    void should_deleteInvoiceProductFromInvoiceList() {
+        //given
+        invoiceProduct.setIsDeleted(false);
+        //when
+        when(invoiceProductRepository.findById(anyLong())).thenReturn(Optional.of(invoiceProduct));
+        when(invoiceProductRepository.save(any())).thenReturn(invoiceProduct);
+
+        InvoiceProductDto result = invoiceProductService.deleteInvoiceProduct(anyLong());
+        //then
+        assertNotNull(result);
+        assertTrue(invoiceProduct.getIsDeleted());
+    }
+
+    @Test
+    void shouldUpdateRemainingQuantityOfInvoiceProductUponPurchaseApproval() {
+        //when
+        when(invoiceProductRepository.findAllByInvoiceId(anyLong())).thenReturn(List.of(invoiceProduct));
+        when(invoiceProductRepository.save(any())).thenReturn(invoiceProduct);
+        invoiceProductService.updateRemainingQuantityUponPurchaseApproval(anyLong());
+        //then
+        assertThat(invoiceProduct.getRemainingQuantity()).isEqualTo(5);
+    }
+
+    @Test
+    void shouldUpdateQuantityInStockWhenPurchasedInvoiceProduct() {
+        //when
+        when(invoiceProductRepository.listProductsByInvoiceId(anyLong())).thenReturn(List.of(product)); // product quantity is 10 from TestDoc
+        when(invoiceProductRepository.sumQuantityOfProducts(anyLong(), anyLong())).thenReturn(39); // this is the value we assume we get after sum Query DB
+        invoiceProductService.updateQuantityInStockPurchase(anyLong());
+        //then
+        assertThat(product.getQuantityInStock()).isEqualTo(49); //this is what we expect to be total: product=10 + query=39
+    }
+
+    @Test
+    void shouldUpdateQuantityInStockWhenSalesInvoiceProduct() {
+        //when
+        when(invoiceProductRepository.listProductsByInvoiceId(anyLong())).thenReturn(List.of(product)); // product quantity is 10 from TestDoc
+        when(invoiceProductRepository.sumQuantityOfProducts(anyLong(), anyLong())).thenReturn(8); // this is the value we assume we get after sum Query DB
+        invoiceProductService.updateQuantityInStockSale(anyLong());
+        //then
+        assertThat(product.getQuantityInStock()).isEqualTo(2); // this is what we expect to be total: product=10 - query=8
+    }
+    @Test
+    void shouldUpdateQuantityInStockSale_throwExceptionIfStockNotEnough() {
+        //when
+        when(invoiceProductRepository.listProductsByInvoiceId(anyLong())).thenReturn(List.of(product)); // product quantity is 10 from TestDoc
+        when(invoiceProductRepository.sumQuantityOfProducts(anyLong(), anyLong())).thenReturn(14); // this is the value we assume we get after sum Query DB
+        Throwable throwable = catchThrowable(() -> invoiceProductService.updateQuantityInStockSale(anyLong()));
+        //then
+        assertThat(throwable).isInstanceOf(ProductNotFoundException.class);
+        assertEquals("Stock of " + product.getName() + " is not enough to approve this invoice. Please update the invoice.", throwable.getMessage());
+    }
+
+    @Test
+    void shouldCalculateProfitOrLoss() {
+        //given
+        CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
+        invoiceProduct.setProduct(product);
+        //when
+        when(invoiceProductRepository.findAllByInvoiceId(anyLong())).thenReturn(List.of(invoiceProduct));
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
+        when(invoiceProductRepository.getApprovedPurchaseInvoiceProducts(anyLong(), anyLong())).thenReturn(List.of(invoiceProduct));
+        when(invoiceProductRepository.save(any())).thenReturn(invoiceProduct);
+
+        invoiceProductService.calculateProfitOrLoss(anyLong());
+        //then
+        assertThat(invoiceProduct.getProfitLoss()).isEqualTo(BigDecimal.valueOf(55.0));
+    }
+
+    @Test
+    void shouldInvokeLowQuantityAlert() {
+        //given
+        productDto.setQuantityInStock(4); //quantity in stock is 4
+        productDto.setLowLimitAlert(10); // quantity alert is 10 and below
+        Product product1 = mapperUtil.convert(productDto, new Product());
+        //when
+        when(invoiceProductRepository.listProductsByInvoiceId(anyLong())).thenReturn(List.of(product1));
+        Throwable throwable = catchThrowable(() -> invoiceProductService.checkForLowQuantityAlert(anyLong()));
+        //then
+//        assertThat(throwable).isNull();
+        assertThat(throwable).isInstanceOf(ProductLowLimitAlertException.class);
+        assertEquals("Stock of ["+product1.getName()+"] decreased below low limit.", throwable.getMessage());
+    }
+
+    @Test
+    void shouldNotInvokeLowQuantityAlert() {
+        //when
+        when(invoiceProductRepository.listProductsByInvoiceId(anyLong())).thenReturn(List.of(product));
+        Throwable throwable = catchThrowable(() -> invoiceProductService.checkForLowQuantityAlert(anyLong()));
+        //then
+        assertNull(throwable);
+    }
 }
