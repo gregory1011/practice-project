@@ -92,6 +92,7 @@ public class SalesInvoiceController {
     @GetMapping("/approve/{id}")
     public String approveInvoice(@PathVariable("id") Long id) {
         invoiceService.approveInvoice(id);
+        invoiceProductService.calculateProfitOrLoss(id);
         return "redirect:/salesInvoices/list";
     }
 
