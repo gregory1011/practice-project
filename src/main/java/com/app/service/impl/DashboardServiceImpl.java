@@ -27,15 +27,15 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final InvoiceService invoiceService;
     private final CurrencyExchangeClient currencyExchange;
-
     private  CurrencyDto cachedCurrencyDto;
 
+    @ExecutionTime
     @Scheduled(fixedRate = 10_000) // every 100 seconds from milliseconds
     public void scheduleFetchCurrencyRate(){
         fetchCurrencyRateAsync();
     }
 
-    @Async
+    @Async // run this method async (with another thread)
     public void fetchCurrencyRateAsync() {
         log.info("... fetching currencies with thread : {}", Thread.currentThread().getName());
         try {
