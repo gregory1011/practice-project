@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductDto listProductById(Long id) {
+    public ProductDto findById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
         return mapperUtil.convert(product, new ProductDto());
     }
