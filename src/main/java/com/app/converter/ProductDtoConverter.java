@@ -16,7 +16,7 @@ public class ProductDtoConverter implements Converter<String , ProductDto> {
     @Override
     public ProductDto convert(String source) {
         if (source.isEmpty()) return null;
-        return productService.listProductById(Long.parseLong(source));
+        return productService.findById(Long.parseLong(source));
     }
 
 }
