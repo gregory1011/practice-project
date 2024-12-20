@@ -60,7 +60,7 @@ public class ProductController {
 
     @GetMapping("/update/{id}")
     public String updateProduct(@PathVariable Long id, Model model) {
-        model.addAttribute("product", productService.listProductById(id));
+        model.addAttribute("product", productService.findById(id));
         model.addAttribute("categories", categoryService.listAllCategories());
         model.addAttribute("productUnits", Arrays.stream(ProductUnit.values()).toList());
         return "product/product-update";
