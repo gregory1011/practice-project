@@ -9,6 +9,7 @@ import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
 import com.app.exceptions.InvoiceNotFoundException;
 import com.app.repository.InvoiceRepository;
+import com.app.service.CompanyService;
 import com.app.service.InvoiceProductService;
 import com.app.service.InvoiceService;
 import com.app.service.SecurityService;
@@ -32,6 +33,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
     private final InvoiceProductService invoiceProductService;
+    private final CompanyService companyService;
 
     @Override
     public InvoiceDto findById(Long id) {
@@ -71,10 +73,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType) {
         invoiceDto.setInvoiceType(invoiceType);
-        invoiceDto.setCompany(securityService.getLoggedInUser().getCompany());
+        invoiceDto.setCompany(companyService.getCompanyByLoggedInUser());
         invoiceDto.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
-        Invoice invoice = invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
-        return mapperUtil.convert(invoice, new InvoiceDto());
+        Invoice entity = invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
+        return mapperUtil.convert(entity, new InvoiceDto());
     }
 
     @ExecutionTime
