@@ -11,7 +11,7 @@ public interface InvoiceProductService {
     List<InvoiceProductDto> listInvoiceProductByInvoiceId(Long invoiceId);
     InvoiceProductDto add(InvoiceProductDto invoiceProductDto, Long invoiceId);
     List<InvoiceProductDto> listAllApprovedInvoiceProductsOfCompany();
-    InvoiceProductDto saveInvoiceProduct(Long invoiceId, InvoiceProductDto dto);
+    InvoiceProductDto save(Long invoiceId, InvoiceProductDto dto);
     InvoiceProductDto deleteInvoiceProduct(Long invoiceProductId);
     void updateRemainingQuantityUponPurchaseApproval(Long id);
     void updateQuantityInStockPurchase(Long id);
