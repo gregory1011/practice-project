@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,11 +56,8 @@ public class DashboardServiceImpl_UnitTest {
 
 
     @Test
-    void testFetchCurrencyRatesAsync_Successfully() {
+    void testFetchCurrencyRatesAsync_Successful() {
         //given
-//        ExchangeRateDto exchangeRateDto= new ExchangeRateDto();
-//        exchangeRateDto.setUsd(currencyDto);
-
         ResponseEntity<ExchangeRateDto> responseEntity= new ResponseEntity<>(exchangeRateDto, HttpStatus.OK);
         //when
         when(currencyExchangeClient.getUsdExchangeRate()).thenReturn(responseEntity);
