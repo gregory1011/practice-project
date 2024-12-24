@@ -86,7 +86,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
-    public InvoiceProductDto saveInvoiceProduct(Long invoiceId, InvoiceProductDto dto) {
+    public InvoiceProductDto save(Long invoiceId, InvoiceProductDto dto) {
         Invoice invoice = mapperUtil.convert(invoiceService.findById(invoiceId), new Invoice());
         InvoiceProduct invoiceProduct = mapperUtil.convert(dto, new InvoiceProduct());
         invoiceProduct.setInvoice(invoice);
