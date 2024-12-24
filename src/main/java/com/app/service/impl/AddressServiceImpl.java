@@ -51,7 +51,7 @@ public class AddressServiceImpl implements AddressService {
         if (response.getStatusCode().is2xxSuccessful()) {
             displayCountryList = Objects.requireNonNull(response.getBody())
                     .stream().map(CountryDto::getCountryName).toList();
-        } else if (displayCountryList.isEmpty()) {
+        } else if (displayCountryList == null) {
             log.info("... could not fetched Countries, assigning back-up list");
             displayCountryList= List.of("United States", "Canada", "France", "India", "Japan", "United Kingdom");
         }
