@@ -73,7 +73,7 @@ public class SalesInvoiceController {
             model.addAttribute("invoiceProducts", invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(invoiceId));
             return "invoice/purchase-invoice-update";
         }
-        invoiceProductService.saveInvoiceProduct(invoiceId, dto);
+        invoiceProductService.save(invoiceId, dto);
         return "redirect:/salesInvoices/update/"+invoiceId;
     }
 
