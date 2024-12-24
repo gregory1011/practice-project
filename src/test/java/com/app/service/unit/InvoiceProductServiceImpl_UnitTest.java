@@ -62,6 +62,7 @@ public class InvoiceProductServiceImpl_UnitTest {
     private Invoice invoice;
     private ProductDto productDto;
     private Product product;
+
     @BeforeEach
     void setUp() {
         invoiceProductDto= TestDocInitializer.getInvoiceProductDto();
@@ -151,7 +152,7 @@ public class InvoiceProductServiceImpl_UnitTest {
         when(invoiceService.findById(anyLong())).thenReturn(invoiceDto);
         when(invoiceProductRepository.save(any())).thenReturn(invoiceProduct);
 
-        InvoiceProductDto result = invoiceProductService.saveInvoiceProduct(1L, invoiceProductDto);
+        InvoiceProductDto result = invoiceProductService.save(1L, invoiceProductDto);
         // assert
         assertThat(result).usingRecursiveComparison()
                 .withStrictTypeChecking()
