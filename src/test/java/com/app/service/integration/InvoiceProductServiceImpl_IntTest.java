@@ -1,18 +1,22 @@
 package com.app.service.integration;
 
 
+import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
 import com.app.dto.ProductDto;
 import com.app.entity.InvoiceProduct;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
 import com.app.exceptions.InvoiceProductNotFoundException;
+import com.app.exceptions.ProductLowLimitAlertException;
+import com.app.exceptions.ProductNotFoundException;
 import com.app.repository.InvoiceProductRepository;
 import com.app.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -70,6 +74,14 @@ public class InvoiceProductServiceImpl_IntTest {
     }
 
     @Test
+    void listAllApprovedInvoiceProductsOfCompany() {
+        //when
+        List<InvoiceProductDto> result = invoiceProductService.listAllApprovedInvoiceProductsOfCompany();
+        //then
+        assertThat(result).hasSize(3);
+    }
+
+    @Test
     void add_shouldAddInvoiceProductToInvoice() {
         InvoiceProductDto result = TestDocInitializer.getInvoiceProductDto();
         assertThat(result.getQuantity()).isEqualTo(5);
@@ -101,8 +113,85 @@ public class InvoiceProductServiceImpl_IntTest {
 
     @Test
     void updateQuantityInStockPurchase_whenApproved() {
-        ProductDto dto = productService.findById(ID);
-        Integer initialQuantity = dto.getQuantityInStock();
-        TestDocInitializer.getInvoiceDto(InvoiceStatus.AWAITING_APPROVAL, InvoiceType.PURCHASE);
+        //given
+        ProductDto productDto = productService.findById(1L);
+        Integer initialQuantity = productDto.getQuantityInStock();
+        InvoiceDto invoiceDto = new InvoiceDto();
+        InvoiceDto saveInvoice = invoiceService.saveInvoice(invoiceDto, InvoiceType.PURCHASE);
+
+        InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
+        invoiceProductDto.setProduct(productDto);
+        invoiceProductDto.setInvoice(saveInvoice);
+        invoiceProductDto.setQuantity(10);
+        invoiceProductService.save(saveInvoice.getId(), invoiceProductDto);
+
+        //when
+        invoiceProductService.updateQuantityInStockPurchase(saveInvoice.getId());
+        //then
+        productDto= productService.findById(ID);
+        assertThat(productDto.getQuantityInStock()).isEqualTo(initialQuantity+10);
     }
+
+    @Test
+    void updateQuantityInStockSale_whenApprovedAndStockEnough() {
+        //given
+        ProductDto productDto= productService.findById(1L);
+        Integer initialQuantityInStock = productDto.getQuantityInStock();
+        //when
+        invoiceProductService.updateQuantityInStockSale(4L);
+        //then
+        productDto= productService.findById(1L);
+        assertThat(productDto.getQuantityInStock()).isEqualTo(initialQuantityInStock - 2);
+    }
+
+    @Test
+    void updateQuantityInStockSale_shouldThrowException_stockNotEnough() {
+        //given
+        ProductDto productDto = productService.findById(1L);
+        productDto.setQuantityInStock(1);
+        productService.saveProduct(productDto);
+        //when
+        Throwable throwable = catchThrowable(() -> invoiceProductService.updateQuantityInStockSale(4L));
+        //then
+        assertThat(throwable).isInstanceOf(ProductNotFoundException.class);
+    }
+
+    @Test
+    @WithMockUser(username = "manager@greentech.com", password= "Abc1", roles= "Manager")
+    void calculateProfitOrLoss_withSuccess() {
+        //when
+        invoiceProductService.calculateProfitOrLoss(4L);
+        //then
+        List<InvoiceProductDto> result = invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(4L);
+        assertThat(result).isNotEmpty();
+        result.forEach(ip-> assertThat(ip.getProfitLoss()).isNotEqualTo(BigDecimal.ZERO));
+    }
+
+    @Test
+    void shouldInvokeLowQuantityAlert() {
+        //given
+        ProductDto productDto = productService.findById(1L);
+        productDto.setQuantityInStock(1);
+        productDto.setLowLimitAlert(5);
+        productService.saveProduct(productDto);
+        //when
+        Throwable throwable = catchThrowable(() -> invoiceProductService.checkForLowQuantityAlert(4L));
+        //then
+        assertThat(throwable).isInstanceOf(ProductLowLimitAlertException.class);
+    }
+
+    @Test
+    void shouldNotInvokeLowLimitAlert() {
+        //given
+        ProductDto productDto = productService.findById(1L);
+        productDto.setLowLimitAlert(5);
+        productDto.setQuantityInStock(6);
+        productService.saveProduct(productDto);
+        //when
+        Throwable throwable = catchThrowable(() -> invoiceProductService.checkForLowQuantityAlert(4L));
+        //then
+        assertThat(throwable).isNull();
+    }
+
+
 }
