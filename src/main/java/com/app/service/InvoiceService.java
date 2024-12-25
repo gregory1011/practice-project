@@ -10,8 +10,8 @@ import java.util.List;
 public interface InvoiceService {
 
     InvoiceDto findById(Long id);
-    List<InvoiceDto> listAllByInvoiceType(InvoiceType invoiceType);
-    List<InvoiceDto> listAllInvoiceByClientVendorId(Long id);
+    List<InvoiceDto> listInvoices(InvoiceType invoiceType);
+//    List<InvoiceDto> listAllInvoiceByClientVendorId(Long id);
     InvoiceDto generateNewInvoiceDto(InvoiceType invoiceType);
     InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType);
     void approveInvoice(Long id);
