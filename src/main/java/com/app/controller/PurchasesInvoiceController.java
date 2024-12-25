@@ -30,7 +30,7 @@ public class PurchasesInvoiceController {
 
     @GetMapping("/list")
     public String list(Model model) {
-        model.addAttribute("invoices", invoiceService.listAllByInvoiceType(InvoiceType.PURCHASE));
+        model.addAttribute("invoices", invoiceService.listInvoices(InvoiceType.PURCHASE));
         return "invoice/purchase-invoice-list";
     }
 
