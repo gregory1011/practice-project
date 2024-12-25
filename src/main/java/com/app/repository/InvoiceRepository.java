@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
-    List<Invoice> findAllByClientVendor_id(Long id);
-    List<Invoice> findAllByInvoiceType(InvoiceType invoiceType);
+    List<Invoice> findAllByCompanyIdAndInvoiceType(Long id, InvoiceType invoiceType);
     Invoice findFirstByCompanyIdAndInvoiceTypeOrderByInvoiceNoDesc(long companyId, InvoiceType invoiceType);
 }
