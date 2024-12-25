@@ -42,10 +42,9 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<InvoiceDto> listAllByInvoiceType(InvoiceType invoiceType) {
-        Long companyId = securityService.getLoggedInUser().getCompany().getId();
-        return invoiceRepository.findAllByInvoiceType(invoiceType).stream()
-                .filter(m->m.getCompany().getId().equals(companyId))
+    public List<InvoiceDto> listInvoices(InvoiceType invoiceType) {
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
+        return invoiceRepository.findAllByCompanyIdAndInvoiceType(companyId, invoiceType).stream()
                 .sorted(Comparator.comparing(Invoice::getInvoiceNo).reversed())
                 .map(each-> {
                     InvoiceDto invoiceDto = mapperUtil.convert(each, new InvoiceDto());
@@ -55,11 +54,11 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .toList();
     }
 
-    @Override
-    public List<InvoiceDto> listAllInvoiceByClientVendorId(Long id) {
-        List<Invoice> list = invoiceRepository.findAllByClientVendor_id(id);
-        return list.stream().map(each -> mapperUtil.convert(each, new InvoiceDto())).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<InvoiceDto> listAllInvoiceByClientVendorId(Long id) {
+//        List<Invoice> list = invoiceRepository.findAllByClientVendor_id(id);
+//        return list.stream().map(each -> mapperUtil.convert(each, new InvoiceDto())).collect(Collectors.toList());
+//    }
 
     @Override
     public InvoiceDto generateNewInvoiceDto(InvoiceType invoiceType) {
@@ -114,9 +113,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDto> listLast3ApprovedInvoices() {
-        Long id = securityService.getLoggedInUser().getCompany().getId();
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
         return invoiceRepository.findAll().stream()
-                .filter(each->each.getCompany().getId().equals(id))
+                .filter(each->each.getCompany().getId().equals(companyId))
                 .filter(each->each.getInvoiceStatus().equals(InvoiceStatus.APPROVED))
                 .sorted(Comparator.comparing(Invoice::getInsertDateTime).reversed())
                 .limit(3)
@@ -130,7 +129,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public BigDecimal sumTotal(InvoiceType invoiceType) {
-        return listAllByInvoiceType(invoiceType).stream()
+        return listInvoices(invoiceType).stream()
                 .filter(each->each.getInvoiceStatus().equals(InvoiceStatus.APPROVED))
                 .map(InvoiceDto::getTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -173,7 +172,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     private String generateInvoiceNo(InvoiceType invoiceType) {
-        Long companyId = securityService.getLoggedInUser().getCompany().getId();
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
         Invoice invoice = invoiceRepository.findFirstByCompanyIdAndInvoiceTypeOrderByInvoiceNoDesc(companyId, invoiceType);
 
         long number = invoice.getInvoiceNo() == null ? 0 : Long.parseLong(invoice.getInvoiceNo().substring(2)); // ex: S-003
