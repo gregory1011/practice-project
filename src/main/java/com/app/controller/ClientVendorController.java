@@ -24,17 +24,17 @@ public class ClientVendorController {
 
 
     private final ClientVendorService clientVendorService;
-    private final InvoiceService invoiceService;
+//    private final InvoiceService invoiceService;
     private final AddressService addressService;
 
     @GetMapping("/list")
     public String listClientVendors(Model model) {
-        List<ClientVendorDto> clientVendorDtoList = clientVendorService.listAllClientVendors();
-        for (ClientVendorDto dto : clientVendorDtoList) {
-            boolean hasInvoice= !invoiceService.listAllInvoiceByClientVendorId(dto.getId()).isEmpty();
-            dto.setHasInvoice(hasInvoice);
-        }
-        model.addAttribute("clientVendors", clientVendorDtoList);
+//        List<ClientVendorDto> clientVendorDtoList = clientVendorService.listAllClientVendors();
+//        for (ClientVendorDto dto : clientVendorDtoList) {
+//            boolean hasInvoice= !invoiceService.listAllInvoiceByClientVendorId(dto.getId()).isEmpty();
+//            dto.setHasInvoice(hasInvoice);
+//        }
+        model.addAttribute("clientVendors", clientVendorService.listAllClientVendors());
         return "clientVendor/clientVendor-list";
     }
 
