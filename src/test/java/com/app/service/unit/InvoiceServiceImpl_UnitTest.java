@@ -1,7 +1,9 @@
 package com.app.service.unit;
 
+import com.app.dto.CompanyDto;
 import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
+import com.app.entity.Company;
 import com.app.entity.Invoice;
 import com.app.entity.InvoiceProduct;
 import com.app.enums.CompanyStatus;
@@ -23,8 +25,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -32,8 +36,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +57,9 @@ public class InvoiceServiceImpl_UnitTest {
     private InvoiceProduct invoiceProduct;
     @BeforeEach
     void setUp() {
+        CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
         invoiceDto = TestDocInitializer.getInvoiceDto(InvoiceStatus.AWAITING_APPROVAL, InvoiceType.SALES);
+        invoiceDto.setCompany(companyDto);
         invoice= mapperUtil.convert(invoiceDto, new Invoice());
         invoiceProductDto= TestDocInitializer.getInvoiceProductDto();
         invoiceProduct= mapperUtil.convert(invoiceProductDto, new InvoiceProduct());
@@ -114,6 +119,137 @@ public class InvoiceServiceImpl_UnitTest {
         InvoiceDto result = invoiceService.generateNewInvoiceDto(InvoiceType.SALES);
         //then part
         assertThat(result.getInvoiceNo()).isEqualTo("S-101");
+    }
+
+    @Test
+    void save_shouldSaveInvoice() {
+        //given
+        CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
+        //when part
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
+
+        InvoiceDto result = invoiceService.save(invoiceDto, InvoiceType.SALES);
+        //then part
+        assertThat(result).usingRecursiveComparison()
+                .ignoringFields("price", "tax", "total")
+                .isEqualTo(invoiceDto);
+        assertThat(result.getInvoiceStatus()).isEqualTo(InvoiceStatus.AWAITING_APPROVAL);
+    }
+
+    @Test
+    void update_shouldUpdateInvoice() {
+        //when part
+        when(invoiceRepository.findById(anyLong())).thenReturn(Optional.ofNullable(invoice));
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
+
+        InvoiceDto result = invoiceService.updateInvoice(invoiceDto);
+        //then part
+        assertThat(result).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .ignoringFields("price", "tax", "total")
+                .isEqualTo(invoiceDto);
+    }
+
+    @Test
+    @Transactional
+    void delete_shouldSetIsDeletedTrue() {
+        //given
+        invoice.setIsDeleted(true);
+        //when
+        when(invoiceRepository.findById(anyLong())).thenReturn(Optional.ofNullable(invoice));
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
+
+        invoiceService.deleteInvoice(anyLong());
+        verify(invoiceRepository, times(1)).findById(anyLong());
+        verify(invoiceRepository, times(1)).save(any(Invoice.class));
+        assertThat(invoice.getIsDeleted()).isEqualTo(true);
 
     }
+
+    @Test
+    void print_shouldPrintInvoice() {
+        //when
+        when(invoiceRepository.findById(anyLong())).thenReturn(Optional.ofNullable(invoice));
+//        when(invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(anyLong())).thenReturn(List.of(invoiceProductDto));
+
+        InvoiceDto result = invoiceService.printInvoiceId(anyLong());
+        //then part
+        assertThat(result).usingRecursiveComparison()
+                .ignoringFields("price", "tax", "total")
+                .isEqualTo(invoiceDto);
+    }
+
+    @Test
+    void approve_shouldApprove_PurchaseInvoice() {
+        // given part
+        invoiceDto.setInvoiceType(InvoiceType.PURCHASE);
+        invoiceDto.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoice.setInvoiceType(InvoiceType.PURCHASE);
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        //when part
+        when(invoiceRepository.findById(any())).thenReturn(Optional.of(invoice));
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
+
+        InvoiceDto result = invoiceService.approveInvoice(anyLong());
+
+        // then part
+        verify(invoiceProductService, times(1)).updateRemainingQuantityUponPurchaseApproval(anyLong());
+        verify(invoiceProductService, times(1)).updateQuantityInStockPurchase(anyLong());
+        assertThat(result.getInvoiceStatus()).isEqualTo(InvoiceStatus.APPROVED);
+        assertThat(result.getDate()).isEqualTo(LocalDate.now());
+        assertThat(result).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .ignoringFields("price", "tax", "total", "date")
+                .isEqualTo(invoiceDto);
+
+    }
+    @Test
+    void approve_shouldApprove_SalesInvoice() {
+        //given part
+        invoiceDto.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        //when part
+        when(invoiceRepository.findById(anyLong())).thenReturn(Optional.of(invoice));
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
+
+        InvoiceDto result = invoiceService.approveInvoice(anyLong());
+
+        //then part
+        verify(invoiceProductService, times(1)).updateQuantityInStockSale(anyLong());
+        verify(invoiceProductService, times(1)).calculateProfitOrLoss(anyLong());
+        assertThat(result.getInvoiceStatus()).isEqualTo(InvoiceStatus.APPROVED);
+        assertThat(result.getDate()).isEqualTo(LocalDate.now());
+
+        assertThat(result).usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .ignoringFields("price", "tax", "total", "date")
+                .isEqualTo(invoiceDto);
+    }
+
+    @Test
+    void shouldFindLast_3_ApprovedInvoices() {
+        //given
+        CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        //when
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
+        when(invoiceRepository.findByCompanyIdOrderByInsertDateTimeDescLimit3(anyLong())).thenReturn(List.of(invoice));
+
+        List<InvoiceDto> result = invoiceService.listLast3ApprovedInvoices();
+        //then part
+        assertFalse(result.isEmpty());
+        assertThat(result.get(0).getInvoiceStatus()).isEqualTo(InvoiceStatus.APPROVED);
+        verify(invoiceRepository, times(1)).findByCompanyIdOrderByInsertDateTimeDescLimit3(anyLong());
+        verify(companyService, times(1)).getCompanyByLoggedInUser();
+    }
+
+    @Test
+    void shouldSumTotalApprovedInvoices() {
+
+    }
+
+
 }
