@@ -47,7 +47,7 @@ public class PurchasesInvoiceController {
             model.addAttribute("vendors", clientVendorService.listAllByClientVendorType(ClientVendorType.VENDOR));
             return "invoice/purchase-invoice-create";
         }
-        InvoiceDto dto = invoiceService.saveInvoice(invoiceDto, InvoiceType.PURCHASE);
+        InvoiceDto dto = invoiceService.save(invoiceDto, InvoiceType.PURCHASE);
         return "redirect:/purchaseInvoices/update/"+dto.getId();
     }
 
