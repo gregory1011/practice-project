@@ -15,6 +15,7 @@ import com.app.service.InvoiceService;
 import com.app.service.SecurityService;
 import com.app.util.MapperUtil;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,16 +23,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final MapperUtil mapperUtil;
-    private final SecurityService securityService;
     private final InvoiceProductService invoiceProductService;
     private final CompanyService companyService;
 
@@ -70,21 +69,21 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType) {
+    public InvoiceDto save(InvoiceDto invoiceDto, InvoiceType invoiceType) {
         invoiceDto.setInvoiceType(invoiceType);
         invoiceDto.setCompany(companyService.getCompanyByLoggedInUser());
         invoiceDto.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
-        Invoice entity = invoiceRepository.save(mapperUtil.convert(invoiceDto, new Invoice()));
+        Invoice invoice = mapperUtil.convert(invoiceDto, new Invoice());
+        Invoice entity = invoiceRepository.save(invoice);
         return mapperUtil.convert(entity, new InvoiceDto());
     }
 
     @ExecutionTime
     @Transactional
-    public void approveInvoice(Long id) {
+    public InvoiceDto approveInvoice(Long id) {
         Invoice invoice = invoiceRepository.findById(id).orElseThrow(InvoiceNotFoundException::new);
         invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
         invoice.setDate(LocalDate.now());
-        invoiceRepository.save(invoice);
         if (invoice.getInvoiceType().equals(InvoiceType.PURCHASE)){
             invoiceProductService.updateRemainingQuantityUponPurchaseApproval(id);
             invoiceProductService.updateQuantityInStockPurchase(id);
@@ -92,14 +91,17 @@ public class InvoiceServiceImpl implements InvoiceService {
             invoiceProductService.updateQuantityInStockSale(id);
             invoiceProductService.calculateProfitOrLoss(id);
         }
+        Invoice saved = invoiceRepository.save(invoice);
+        return mapperUtil.convert(saved, new InvoiceDto());
     }
 
     @Override
-    public void updateInvoice(InvoiceDto dto) {
-        ClientVendor clientVendor = mapperUtil.convert(dto.getClientVendor(), new ClientVendor());
+    public InvoiceDto updateInvoice(InvoiceDto dto) {
         Invoice invoice = invoiceRepository.findById(dto.getId()).orElseThrow(InvoiceNotFoundException::new);
+        ClientVendor clientVendor = mapperUtil.convert(dto.getClientVendor(), new ClientVendor());
         invoice.setClientVendor(clientVendor);
-        invoiceRepository.save(invoice);
+        Invoice saved = invoiceRepository.save(invoice);
+        return mapperUtil.convert(saved, new InvoiceDto());
     }
 
     @Override
@@ -114,17 +116,12 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceDto> listLast3ApprovedInvoices() {
         Long companyId = companyService.getCompanyByLoggedInUser().getId();
-        return invoiceRepository.findAll().stream()
-                .filter(each->each.getCompany().getId().equals(companyId))
-                .filter(each->each.getInvoiceStatus().equals(InvoiceStatus.APPROVED))
-                .sorted(Comparator.comparing(Invoice::getInsertDateTime).reversed())
-                .limit(3)
-                .map(each ->{
+        return invoiceRepository.findByCompanyIdOrderByInsertDateTimeDescLimit3(companyId) // and InvoiceStatus = 'APPROVED'
+                .stream().map(each ->{
                     InvoiceDto invoiceDto = mapperUtil.convert(each, new InvoiceDto());
                     calculatePricesAndTaxes(invoiceDto);
                     return invoiceDto;
-                })
-                .toList();
+                }).toList();
     }
 
     @Override
@@ -137,11 +134,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public BigDecimal sumProfitLoss() {
-        return invoiceRepository.findAll().stream()
-                .filter(m->m.getCompany().getId().equals(securityService.getLoggedInUser().getCompany().getId()))
-                .filter(m->m.getInvoiceType().equals(InvoiceType.SALES))
-                .filter(m->m.getInvoiceStatus().equals(InvoiceStatus.APPROVED))
-                .map(each ->
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
+        return invoiceRepository.findByCompanyIdAndInvoiceTypeSalesAndInvoiceStatusApproved(companyId)
+                .stream().map(each ->
                         invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(each.getId())
                                 .stream()
                                 .map(InvoiceProductDto::getProfitLoss)
