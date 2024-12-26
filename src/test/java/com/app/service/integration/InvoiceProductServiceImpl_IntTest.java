@@ -117,7 +117,7 @@ public class InvoiceProductServiceImpl_IntTest {
         ProductDto productDto = productService.findById(1L);
         Integer initialQuantity = productDto.getQuantityInStock();
         InvoiceDto invoiceDto = new InvoiceDto();
-        InvoiceDto saveInvoice = invoiceService.saveInvoice(invoiceDto, InvoiceType.PURCHASE);
+        InvoiceDto saveInvoice = invoiceService.save(invoiceDto, InvoiceType.PURCHASE);
 
         InvoiceProductDto invoiceProductDto = new InvoiceProductDto();
         invoiceProductDto.setProduct(productDto);
