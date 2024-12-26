@@ -248,8 +248,50 @@ public class InvoiceServiceImpl_UnitTest {
 
     @Test
     void shouldSumTotalApprovedInvoices() {
+        //given
+        List<InvoiceDto> dtoList = Arrays.asList(TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.PURCHASE),
+                TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.PURCHASE),
+                TestDocInitializer.getInvoiceDto(InvoiceStatus.AWAITING_APPROVAL, InvoiceType.PURCHASE));
+        List<Invoice> invoices = dtoList.stream().map(each -> mapperUtil.convert(each, new Invoice())).toList();
+        CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
 
+        List<InvoiceProductDto> invoiceProductDtoList = List.of(TestDocInitializer.getInvoiceProductDto(), TestDocInitializer.getInvoiceProductDto(), TestDocInitializer.getInvoiceProductDto());
+        invoiceProductDtoList.get(0).setTotal(BigDecimal.valueOf(55));
+        invoiceProductDtoList.get(1).setTotal(BigDecimal.valueOf(55));
+        invoiceProductDtoList.get(2).setTotal(BigDecimal.valueOf(55));
+
+        //when part
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
+        when(invoiceRepository.findAllByCompanyIdAndInvoiceType(anyLong(), any(InvoiceType.class))).thenReturn(invoices);
+        when(invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(anyLong())).thenReturn(invoiceProductDtoList);
+
+        BigDecimal actualResult = invoiceService.sumTotal(InvoiceType.PURCHASE);
+
+        //then part
+        assertThat(actualResult).isEqualTo(BigDecimal.valueOf(330));
+        verify(companyService).getCompanyByLoggedInUser();
     }
 
+    @Test
+    void shouldSumProfitLossApprovedInvoices() {
+        //given
+        List<InvoiceDto> dtoList = Arrays.asList(TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.SALES),
+                TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.SALES),
+                TestDocInitializer.getInvoiceDto(InvoiceStatus.AWAITING_APPROVAL, InvoiceType.SALES));
+        List<Invoice> invoices = dtoList.stream().map(each -> mapperUtil.convert(each, new Invoice())).toList();
+        CompanyDto companyDto = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
 
+        List<InvoiceProductDto> invoiceProductDtoList = List.of(TestDocInitializer.getInvoiceProductDto(), TestDocInitializer.getInvoiceProductDto(), TestDocInitializer.getInvoiceProductDto());
+        invoiceProductDtoList.get(0).setProfitLoss(BigDecimal.TEN);
+        invoiceProductDtoList.get(1).setProfitLoss(BigDecimal.TEN);
+        invoiceProductDtoList.get(2).setProfitLoss(BigDecimal.TEN);
+
+        //when part
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
+        when(invoiceRepository.findByCompanyIdAndInvoiceTypeSalesAndInvoiceStatusApproved(anyLong())).thenReturn(invoices);
+        when(invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(anyLong())).thenReturn(invoiceProductDtoList);
+
+        BigDecimal actualResult = invoiceService.sumProfitLoss();
+        assertThat(actualResult).isEqualTo(BigDecimal.valueOf(90));
+    }
 }
