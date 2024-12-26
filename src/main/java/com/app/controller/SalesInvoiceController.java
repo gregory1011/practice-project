@@ -27,7 +27,7 @@ public class SalesInvoiceController {
 
     @GetMapping("/list")
     public String list(Model model) {
-        model.addAttribute("invoices", invoiceService.listAllByInvoiceType(InvoiceType.SALES));
+        model.addAttribute("invoices", invoiceService.listInvoices(InvoiceType.SALES));
         return "invoice/sales-invoice-list";
     }
 
@@ -44,7 +44,7 @@ public class SalesInvoiceController {
             model.addAttribute("clients", clientVendorService.listAllByClientVendorType(ClientVendorType.CLIENT));
             return "invoice/sales-invoice-create";
         }
-        InvoiceDto dto = invoiceService.saveInvoice(invoiceDto, InvoiceType.SALES);
+        InvoiceDto dto = invoiceService.save(invoiceDto, InvoiceType.SALES);
         return "redirect:/salesInvoices/update/"+dto.getId();
     }
 
