@@ -52,11 +52,8 @@ public class AddressServiceImpl_IntTest {
 
     @Test
     void testFetchCountryListAsync() {
-        //Mock the authentication response
-        TokenDto tokenDto = new TokenDto();
-        tokenDto.setAuthToken("test-token");
         //when
-        when(countryClient.auth(null, null)).thenReturn(tokenDto);
+        when(countryClient.auth(any(), any())).thenReturn(mockToken);
 
         //mock the country list response
         CountryDto c1 = new CountryDto("Test Country 1");
