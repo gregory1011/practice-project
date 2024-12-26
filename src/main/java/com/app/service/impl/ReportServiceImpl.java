@@ -29,7 +29,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Map<String, BigDecimal> listMonthlyProfitLossMap() {
         Map<String, BigDecimal> monthlyProfitLoss = new LinkedHashMap<>();
-        List<InvoiceProductDto> list = invoiceService.listAllByInvoiceType(InvoiceType.SALES).stream()
+        List<InvoiceProductDto> list = invoiceService.listInvoices(InvoiceType.SALES).stream()
                 .filter(m -> m.getInvoiceStatus().equals(InvoiceStatus.APPROVED))
                 .sorted(Comparator.comparing(InvoiceDto::getDate).reversed())
                 .flatMap(each -> invoiceProductService.listAllByInvoiceIdAndCalculateTotalPrice(each.getId())
