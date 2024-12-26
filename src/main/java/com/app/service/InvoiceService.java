@@ -13,9 +13,9 @@ public interface InvoiceService {
     List<InvoiceDto> listInvoices(InvoiceType invoiceType);
 //    List<InvoiceDto> listAllInvoiceByClientVendorId(Long id);
     InvoiceDto generateNewInvoiceDto(InvoiceType invoiceType);
-    InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType);
-    void approveInvoice(Long id);
-    void updateInvoice(InvoiceDto dto);
+    InvoiceDto save(InvoiceDto invoiceDto, InvoiceType invoiceType);
+    InvoiceDto approveInvoice(Long id);
+    InvoiceDto updateInvoice(InvoiceDto dto);
     void deleteInvoice(Long id);
     List<InvoiceDto> listLast3ApprovedInvoices();
     BigDecimal sumTotal(InvoiceType invoiceType);
