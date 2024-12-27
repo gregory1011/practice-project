@@ -3,7 +3,6 @@ package com.app.service.unit;
 import com.app.dto.CompanyDto;
 import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
-import com.app.entity.Company;
 import com.app.entity.Invoice;
 import com.app.entity.InvoiceProduct;
 import com.app.enums.CompanyStatus;
