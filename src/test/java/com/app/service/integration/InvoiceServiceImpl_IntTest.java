@@ -12,12 +12,15 @@ import com.app.exceptions.InvoiceNotFoundException;
 import com.app.exceptions.ProductNotFoundException;
 import com.app.repository.InvoiceRepository;
 import com.app.service.*;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -27,18 +30,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+//@ActiveProfiles("test")
 @SpringBootTest
 public class InvoiceServiceImpl_IntTest {
 
     @Autowired
     private InvoiceService invoiceService;
     @Autowired
-    private CompanyService companyService;
-    @Autowired
     private ProductService productService;
-    @Autowired
-    private InvoiceProductService invoiceProductService;
     @Autowired
     private InvoiceRepository invoiceRepository;
 
@@ -134,11 +133,45 @@ public class InvoiceServiceImpl_IntTest {
     @Test
 //    @Transactional
     void test_approveSalesInvoice_throwExceptionForNotSufficientStock() {
-        ProductDto productDto = productService.findById(1L);
+        ProductDto productDto= productService.findById(1L);
         productDto.setQuantityInStock(1);
         productService.saveProduct(productDto);
 
         Throwable throwable = catchThrowable(() -> invoiceService.approveInvoice(1L));
-        assertThat(throwable).isInstanceOf(ProductNotFoundException.class);
+        assertInstanceOf(ProductNotFoundException.class, throwable);
+
+
+//        InvoiceDto invoiceDto = invoiceService.findById(4L);
+
+//        assertThat(throwable).isInstanceOf(ProductNotFoundException.class);
+    }
+
+    @Test
+    void test_approvePurchaseInvoice() {
+        InvoiceDto result = invoiceService.approveInvoice(13L);
+        assertThat(result.getInvoiceStatus()).isEqualTo(InvoiceStatus.APPROVED);
+        assertThat(result.getDate()).isEqualTo(LocalDate.now());
+    }
+
+    @Test
+    void test_listLastThreeApprovedInvoices() {
+        List<InvoiceDto> dtoList = invoiceService.listLast3ApprovedInvoices();
+        assertThat(dtoList).isNotNull();
+        assertThat(dtoList).hasSize(2);
+//        assertThat(dtoList).hasSize(3);
+    }
+
+    @Test
+    void test_sumTotal() {
+        BigDecimal total = invoiceService.sumTotal(InvoiceType.SALES);
+        assertThat(total).isNotNull();
+        assertThat(total).isEqualTo(new BigDecimal("660.000"));
+    }
+
+    @Test
+    void test_sumProfitLoss() {
+        BigDecimal result = invoiceService.sumProfitLoss();
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(new BigDecimal("110.00"));
     }
 }
