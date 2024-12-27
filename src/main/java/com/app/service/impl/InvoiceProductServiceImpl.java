@@ -123,14 +123,13 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     }
 
     @Override
-    public void updateQuantityInStockSale(Long id) {
-        List<Product> list = invoiceProductRepository.listProductsByInvoiceId(id);
-        list.forEach(each -> {
-            final int stock = each.getQuantityInStock() - invoiceProductRepository.sumQuantityOfProducts(id, each.getId());
-            if (stock < 0)
-                throw new ProductNotFoundException("Stock of " + each.getName() + " is not enough to approve this invoice. Please update the invoice.");
-            else each.setQuantityInStock(stock);
-            productService.saveProduct(mapperUtil.convert(each, new ProductDto()));
+    public void updateQuantityInStockSale(Long invoiceId) {
+        List<Product> list = invoiceProductRepository.listProductsByInvoiceId(invoiceId);
+        list.forEach(eachProduct -> {
+            final int stock = eachProduct.getQuantityInStock() - invoiceProductRepository.sumQuantityOfProducts(invoiceId, eachProduct.getId());
+            if (stock < 0) throw new ProductNotFoundException("Stock of " + eachProduct.getName() + " is not enough to approve this invoice. Please update the invoice.");
+            else eachProduct.setQuantityInStock(stock);
+            productService.saveProduct(mapperUtil.convert(eachProduct, new ProductDto()));
         });
     }
 
