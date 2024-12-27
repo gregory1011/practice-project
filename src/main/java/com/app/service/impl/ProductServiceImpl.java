@@ -1,14 +1,14 @@
 package com.app.service.impl;
 
+import com.app.dto.CompanyDto;
 import com.app.dto.ProductDto;
 import com.app.entity.Product;
 import com.app.exceptions.ProductNotFoundException;
 import com.app.repository.ProductRepository;
+import com.app.service.CompanyService;
 import com.app.service.ProductService;
-import com.app.service.SecurityService;
 import com.app.util.MapperUtil;
 import lombok.AllArgsConstructor;
-import org.modelmapper.internal.util.Assert;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final MapperUtil mapperUtil;
-    private final SecurityService securityService;
+    private final CompanyService companyService;
 
 
     @Override
@@ -34,11 +34,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> listAllProducts() {
-        Long id = securityService.getLoggedInUser().getCompany().getId();
-        return productRepository.findAll().stream()
-                .filter(m->m.getCategory().getCompany().getId().equals(id))
-                .sorted(Comparator.comparing(m->m.getCategory().getDescription()))
-                .sorted(Comparator.comparing(Product::getName))
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
+        return productRepository.findByCompanyId(companyId).stream()
+                .sorted(Comparator.comparing((Product p) -> p.getCategory().getDescription())
+                        .thenComparing(Product::getName))
                 .map(each -> {
                     ProductDto dto = mapperUtil.convert(each, new ProductDto());
                     dto.setHasInvoiceProduct(!each.getInvoiceProducts().isEmpty());
@@ -47,9 +46,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void saveProduct(ProductDto dto) {
+    public ProductDto saveProduct(ProductDto dto) {
+        CompanyDto company = companyService.getCompanyByLoggedInUser();
+        dto.getCategory().setCompany(company);
         Product product = mapperUtil.convert(dto, new Product());
-        productRepository.save(product);
+        Product saved = productRepository.save(product);
+        return mapperUtil.convert(saved, new ProductDto());
     }
 
     @Override
@@ -62,14 +64,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(ProductDto dto) {
-        Product product = mapperUtil.convert(dto, new Product());
-        productRepository.save(product);
+    public ProductDto updateProduct(ProductDto dto) {
+        Product product = productRepository.findById(dto.getId()).orElseThrow(ProductNotFoundException::new);
+        final int quantityInStock= dto.getQuantityInStock() == null ? product.getQuantityInStock() : dto.getQuantityInStock();
+        dto.setQuantityInStock(quantityInStock);
+        Product entity= mapperUtil.convert(dto, new Product());
+        Product saved = productRepository.save(entity);
+        return mapperUtil.convert(saved, new ProductDto());
     }
 
     @Override
     public boolean isProductNameExists(ProductDto dto) {
-        Product product= productRepository.findProductByNameAndCompanyId(dto.getName(), securityService.getLoggedInUser().getCompany().getId());
+        Product product= productRepository.findProductByNameAndCompanyId(dto.getName(), companyService.getCompanyByLoggedInUser().getId());
         if (product == null) return false;
         return !Objects.equals(product.getId(), dto.getId()); // dto id= null, it's a new dto obj without id. it hasn't been saved in DB therefore id= null
     }
