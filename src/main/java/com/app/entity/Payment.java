@@ -4,6 +4,7 @@ import com.app.entity.common.BaseEntity;
 import com.app.enums.Months;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity(name = "payments")
+@Where(clause = "is_deleted=false")
 public class Payment extends BaseEntity {
 
     private Integer year;
