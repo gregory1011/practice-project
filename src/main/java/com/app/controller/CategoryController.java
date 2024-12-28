@@ -34,7 +34,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public String createCategory(@Valid @ModelAttribute("newCategory") CategoryDto newCategory, BindingResult bindingResult,Model model) {
+    public String createCategory(@Valid @ModelAttribute("newCategory") CategoryDto newCategory, BindingResult bindingResult) {
         boolean descriptionExists1 = categoryService.isDescriptionExists(newCategory);
         if (descriptionExists1) bindingResult.rejectValue("description", "err.description","Description already exists");
         if (bindingResult.hasErrors()) {
@@ -51,7 +51,7 @@ public class CategoryController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateCategory(@Valid @PathVariable("id") Long id, @ModelAttribute("category")CategoryDto category, BindingResult bindingResult, Model model) {
+    public String updateCategory(@Valid @PathVariable("id") Long id, @ModelAttribute("category")CategoryDto category, BindingResult bindingResult) {
         boolean descriptionExists = categoryService.isDescriptionExists(category);
         if (descriptionExists) bindingResult.rejectValue("description", "err.description", "Description already exists");
         if (bindingResult.hasErrors()) return "category/category-update";
