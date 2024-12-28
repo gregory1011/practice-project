@@ -76,8 +76,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean isProductNameExists(ProductDto dto) {
         Product product= productRepository.findProductByNameAndCompanyId(dto.getName(), companyService.getCompanyByLoggedInUser().getId());
-        if (product == null) return false;
-        return !Objects.equals(product.getId(), dto.getId()); // dto id= null, it's a new dto obj without id. it hasn't been saved in DB therefore id= null
+        if (product == null) return false; // false
+        return !Objects.equals(product.getId(), dto.getId());//false // dto id= null, it's a new dto obj without id. it hasn't been saved in DB therefore id= null
     }
 
 }
