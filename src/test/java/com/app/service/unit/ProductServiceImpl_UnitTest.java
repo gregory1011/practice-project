@@ -1,9 +1,8 @@
 package com.app.service.unit;
 
 
-import com.app.dto.InvoiceProductDto;
+import com.app.dto.CompanyDto;
 import com.app.dto.ProductDto;
-import com.app.entity.Invoice;
 import com.app.entity.InvoiceProduct;
 import com.app.entity.Product;
 import com.app.enums.CompanyStatus;
@@ -21,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -152,6 +150,27 @@ public class ProductServiceImpl_UnitTest {
     }
 
     @Test
-    void isProductNameExist() {
+    void isProductNameExist_shouldReturnTrue() {
+        //given
+        product.setId(null);
+        CompanyDto company = TestDocInitializer.getCompany(CompanyStatus.ACTIVE);
+
+        //when
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(company);
+        when(productRepository.findProductByNameAndCompanyId(anyString(), anyLong())).thenReturn(product);
+
+        boolean result = productService.isProductNameExists(productDto);
+        //then part
+        assertTrue(result);
+    }
+
+    @Test
+    void isProductNameExist_shouldReturnFalse() {
+        //when
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(TestDocInitializer.getCompany(CompanyStatus.ACTIVE));
+        when(productRepository.findProductByNameAndCompanyId(anyString(), anyLong())).thenReturn(product);
+        boolean result = productService.isProductNameExists(productDto);
+        //then part
+        assertFalse(result);
     }
 }
