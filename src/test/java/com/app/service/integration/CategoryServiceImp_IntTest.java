@@ -27,8 +27,6 @@ public class CategoryServiceImp_IntTest {
     private CategoryService categoryService;
     @Autowired
     private CategoryRepository categoryRepository;
-//    @Autowired
-//    private SecurityService securityService;
 
     @BeforeEach
     void setUp() {
@@ -78,7 +76,7 @@ public class CategoryServiceImp_IntTest {
     }
 
     @Test
-    @Transactional // we use transactional to handle deleteCategory() -> when the category: isDeleted= true, and we search for id (in entity class @Where(clause = "is_deleted=false")
+    @Transactional(readOnly = true) // we use transactional to handle deleteCategory() -> when the category: isDeleted= true, and we search for id (in entity class @Where(clause = "is_deleted=false")
     void testDeleteById() {
         Long id = 1L;
         categoryService.deleteById(id);
