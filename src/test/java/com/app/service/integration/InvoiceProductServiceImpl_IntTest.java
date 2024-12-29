@@ -5,7 +5,6 @@ import com.app.dto.InvoiceDto;
 import com.app.dto.InvoiceProductDto;
 import com.app.dto.ProductDto;
 import com.app.entity.InvoiceProduct;
-import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
 import com.app.exceptions.InvoiceProductNotFoundException;
 import com.app.exceptions.ProductLowLimitAlertException;
@@ -95,7 +94,7 @@ public class InvoiceProductServiceImpl_IntTest {
     }
 
     @Test
-    @Transactional // for delete method to run DB with clause where isDeleted=true
+    @Transactional(readOnly = true) // for delete method to run DB with clause where isDeleted=true
     void delete_shouldSetIsDeletedTrue() {
         InvoiceProductDto result = invoiceProductService.deleteInvoiceProduct(ID);
         InvoiceProduct invoiceProduct = invoiceProductRepository.findById(ID).orElseThrow();
@@ -192,6 +191,5 @@ public class InvoiceProductServiceImpl_IntTest {
         //then
         assertThat(throwable).isNull();
     }
-
 
 }
