@@ -41,14 +41,10 @@ import static org.mockito.Mockito.*;
 public class CategoryServiceImpl_UnitTest {
 
 
-    @Mock
-    private CategoryRepository categoryRepository;
-    @Mock
-    private SecurityService securityService;
-    @Spy
-    private MapperUtil mapperUtil= new MapperUtil(new ModelMapper());
-    @InjectMocks
-    private CategoryServiceImpl categoryService;
+    @Mock private CategoryRepository categoryRepository;
+    @Mock private SecurityService securityService;
+    @Spy private MapperUtil mapperUtil= new MapperUtil(new ModelMapper());
+    @InjectMocks private CategoryServiceImpl categoryService;
 
     private Category category;
     private CategoryDto categoryDto;
