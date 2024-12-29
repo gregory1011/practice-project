@@ -22,10 +22,8 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 public class AddressServiceImp_UnitTest {
 
-    @Mock
-    private CountryClient countryClient;
-    @InjectMocks
-    private AddressServiceImpl addressService;
+    @Mock private CountryClient countryClient;
+    @InjectMocks private AddressServiceImpl addressService;
 
     @Value("${api.country.token}")
     private String token;
