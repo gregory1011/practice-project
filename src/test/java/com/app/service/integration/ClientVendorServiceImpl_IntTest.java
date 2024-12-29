@@ -22,7 +22,7 @@ import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@Transactional
+@Transactional(readOnly = true)
 @SpringBootTest
 public class ClientVendorServiceImpl_IntTest {
 
