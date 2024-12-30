@@ -79,7 +79,7 @@ public class TestDocInitializer {
                 .year(2024)
                 .paymentDate(LocalDate.now())
                 .isPaid(true)
-                .company(getCompany(CompanyStatus.ACTIVE))
+                .company(new CompanyDto())
                 .description("Test Payment")
                 .id(1L)
                 .companyStripeId("1K12Oxfr#401")
