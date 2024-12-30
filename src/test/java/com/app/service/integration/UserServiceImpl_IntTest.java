@@ -20,18 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional // we use transactional to handle deleteUser() -> when the user: isDeleted= true, and we search for id (in entity class @Where(clause = "is_deleted=false")
+@Transactional(readOnly = true) // we use transactional to handle deleteUser() -> when the user: isDeleted= true, and we search for id (in entity class @Where(clause = "is_deleted=false")
 @SpringBootTest
 public class UserServiceImpl_IntTest {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-//    @Autowired
-//    private SecurityService securityService;
+    @Autowired private UserRepository userRepository;
+    @Autowired private UserService userService;
+    @Autowired private PasswordEncoder passwordEncoder;
+
 
     @BeforeEach
     void setUserService(){
