@@ -96,7 +96,7 @@ public class InvoiceServiceImpl_IntTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(readOnly = true)
     void test_update() {
         ClientVendorDto dtoCV = TestDocInitializer.getClientVendorDto(ClientVendorType.CLIENT);
         InvoiceDto invoiceDto = invoiceService.findById(1L);
@@ -108,7 +108,7 @@ public class InvoiceServiceImpl_IntTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(readOnly = true)
     void test_delete() {
         invoiceService.deleteInvoice(1L);
         Invoice invoice = invoiceRepository.findById(1L).orElseThrow(NoSuchElementException::new);
@@ -131,7 +131,7 @@ public class InvoiceServiceImpl_IntTest {
     }
 
     @Test
-//    @Transactional
+    @Transactional(readOnly = true)
     void test_approveSalesInvoice_throwExceptionForNotSufficientStock() {
         ProductDto productDto= productService.findById(1L);
         productDto.setQuantityInStock(1);
