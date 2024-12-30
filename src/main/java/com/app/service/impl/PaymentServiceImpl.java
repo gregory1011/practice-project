@@ -8,12 +8,13 @@ import com.app.entity.Payment;
 import com.app.enums.Months;
 import com.app.exceptions.PaymentNotFoundException;
 import com.app.repository.PaymentRepository;
+import com.app.service.CompanyService;
 import com.app.service.PaymentService;
-import com.app.service.SecurityService;
 import com.app.util.MapperUtil;
 import com.stripe.Stripe;
 import com.stripe.exception.*;
 import com.stripe.model.Charge;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +27,12 @@ import java.util.Map;
 
 
 @Service
+@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final MapperUtil mapperUtil;
-    private final SecurityService securityService;
-
-    public PaymentServiceImpl(PaymentRepository paymentRepository, MapperUtil mapperUtil, SecurityService securityService) {
-        this.paymentRepository = paymentRepository;
-        this.mapperUtil = mapperUtil;
-        this.securityService = securityService;
-    }
+    private final CompanyService companyService;
 
 
     @Value("${api.stripe.secretKey}")
@@ -50,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PaymentDto> listAllPaymentsReportByYear(int selectedYear) {
-        Long companyId = securityService.getLoggedInUser().getCompany().getId();
+        Long companyId = companyService.getCompanyByLoggedInUser().getId();
         List<Payment> list = paymentRepository.findByYearAndCompany_Id(selectedYear, companyId);
 //        if (list.isEmpty()){ // this block of code is to upload new data in database for test purpose.
 //            createPayments(selectedYear);
@@ -101,7 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private void createPayments(int year) {
 
-        CompanyDto company = securityService.getLoggedInUser().getCompany();
+        CompanyDto company = companyService.getCompanyByLoggedInUser();
 //        String[] months = DateFormatSymbols.getInstance().getMonths();
         for(Months month : Months.values()){
             Payment payment = new Payment();
