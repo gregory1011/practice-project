@@ -75,7 +75,7 @@ public class ProductServiceImpl_IntTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(readOnly = true)
     void test_delete() {
         Product product = productRepository.findById(1L).orElseThrow();
         product.setQuantityInStock(0);
