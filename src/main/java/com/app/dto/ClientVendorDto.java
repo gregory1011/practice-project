@@ -37,6 +37,5 @@ public class ClientVendorDto {
     private AddressDto address;
 
     private CompanyDto company;
-
     private boolean hasInvoice;
 }
