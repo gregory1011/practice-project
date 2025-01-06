@@ -37,5 +37,4 @@ public class AddressDto {
     @NotBlank(message = "Zip Code is a required field.")
     @Pattern(regexp = "^\\d{5}(?:-\\d{4})?$",  message = "Zipcode should have a valid form 'XXXXX' or 'XXXXX-XXXX'.")
     private String zipCode;
-
 }
