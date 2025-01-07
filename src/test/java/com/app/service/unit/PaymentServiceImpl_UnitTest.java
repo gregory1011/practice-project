@@ -22,6 +22,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +73,13 @@ public class PaymentServiceImpl_UnitTest {
 
     @Test
     void listAllPaymentsReportByYear_paymentsExists() {
+        List<Payment> paymentList = List.of(payment, payment, payment);
+        when(companyService.getCompanyByLoggedInUser()).thenReturn(companyDto);
+        when(paymentRepository.findByYearAndCompany_Id(anyInt(), anyLong())).thenReturn(paymentList);
 
+        List<PaymentDto> result = paymentService.listAllPaymentsReportByYear(2024);
+        assertThat(result.get(0)).usingRecursiveComparison()
+                .ignoringFields("description")
+                .isEqualTo(paymentDto);
     }
 }
