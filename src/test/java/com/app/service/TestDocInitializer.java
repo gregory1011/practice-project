@@ -74,15 +74,15 @@ public class TestDocInitializer {
     }
     public static PaymentDto getPaymentDto(){
         return PaymentDto.builder()
+                .id(1L)
+                .description("Test Payment")
                 .amount(BigDecimal.TEN)
-                .month(Month.JULY)
+                .month(Month.JANUARY)
                 .year(2024)
                 .paymentDate(LocalDate.now())
                 .isPaid(true)
-                .company(new CompanyDto())
-                .description("Test Payment")
-                .id(1L)
                 .companyStripeId("1K12Oxfr#401")
+                .company(new CompanyDto())
                 .build();
     }
     public static ProductDto getProductDto(){
