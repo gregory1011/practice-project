@@ -33,7 +33,6 @@ public class CategoryServiceImp_IntTest {
         SecuritySetUpUtil.setUpSecurityContext();
     }
 
-
     @Test
     void testFindById() {
         Long id = 1L;
@@ -51,6 +50,7 @@ public class CategoryServiceImp_IntTest {
 
     @Test
     void testListAllCategories() {
+
         List<CategoryDto> dtoList = categoryService.listAllCategories();
         assertThat(dtoList).isNotEmpty();
         assertThat(dtoList).isNotNull();
