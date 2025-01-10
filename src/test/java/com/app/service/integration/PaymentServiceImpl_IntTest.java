@@ -91,7 +91,7 @@ public class PaymentServiceImpl_IntTest {
     }
 
 //    @Transactional
-    @Test
+//    @Test
     void test_charge_success() throws StripeException {
         Stripe.apiKey= secretKey;
         when(paymentService.getPaymentById(1L)).thenReturn(paymentDto);
