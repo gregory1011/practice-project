@@ -83,6 +83,7 @@ public class ReportServiceImpl_UnitTest {
 
     @Test
     void listMonthlyProfitLossMap_shouldReturnMonthlyProfitLossMap() {
+
         InvoiceDto invoiceDto = TestDocInitializer.getInvoiceDto(InvoiceStatus.APPROVED, InvoiceType.SALES);
         InvoiceProductDto invoiceProductDto = TestDocInitializer.getInvoiceProductDto();
         LocalDate now = LocalDate.now();
