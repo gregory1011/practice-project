@@ -7,8 +7,6 @@ import com.app.entity.Invoice;
 import com.app.entity.InvoiceProduct;
 import com.app.enums.InvoiceStatus;
 import com.app.enums.InvoiceType;
-import com.app.repository.InvoiceProductRepository;
-import com.app.service.CompanyService;
 import com.app.service.InvoiceProductService;
 import com.app.service.InvoiceService;
 import com.app.service.TestDocInitializer;
@@ -25,15 +23,11 @@ import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
@@ -44,8 +38,6 @@ public class ReportServiceImpl_UnitTest {
 
     @Mock private InvoiceService invoiceService;
     @Mock private InvoiceProductService invoiceProductService;
-    @Mock private InvoiceProductRepository invoiceProductRepository;
-    @Mock private CompanyService companyService;
     @Spy private MapperUtil mapperUtil= new MapperUtil(new ModelMapper());
     @InjectMocks
     private ReportServiceImpl reportService;
@@ -105,6 +97,5 @@ public class ReportServiceImpl_UnitTest {
 //                .containsEntry(key1, BigDecimal.TEN)
 //                .containsEntry(key2, BigDecimal.ONE);
     }
-
 
 }
