@@ -47,5 +47,9 @@ public class SecurityServiceImpl_UnitTest {
         //when part
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
 
+        UserDetails result = securityService.loadUserByUsername(anyString());
+        assertThat(result).isNotNull();
+        assertThat(result.getUsername()).isEqualTo("jora@cydeo.com");
+
     }
 }
