@@ -37,6 +37,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
 
+
     @Scheduled(fixedRate = 100_000) // execute every 100 sec
     public void scheduleCountryList(){
         fetchCountryListAsync();
