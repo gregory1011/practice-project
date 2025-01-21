@@ -23,6 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final MapperUtil mapperUtil;
     private final SecurityService securityService;
 
+
     @Override
     public CategoryDto findById(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
