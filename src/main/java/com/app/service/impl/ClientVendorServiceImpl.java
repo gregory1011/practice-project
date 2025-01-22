@@ -26,7 +26,6 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     private final CompanyService companyService;
 
 
-
     @Override
     @Transactional(readOnly = true)
     public ClientVendorDto findById(Long id) {
