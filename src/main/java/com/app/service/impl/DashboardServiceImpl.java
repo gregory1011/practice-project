@@ -29,6 +29,7 @@ public class DashboardServiceImpl implements DashboardService {
     private final CurrencyExchangeClient currencyExchange;
     private  CurrencyDto cachedCurrencyDto;
 
+
     @ExecutionTime
     @Scheduled(fixedRate = 10_000) // every 100 seconds from milliseconds
     public void scheduleFetchCurrencyRate(){
