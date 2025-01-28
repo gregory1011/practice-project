@@ -26,6 +26,7 @@ import java.util.List;
 public class InvoiceProductServiceImpl implements InvoiceProductService {
 
 
+
     private final InvoiceProductRepository invoiceProductRepository;
     private final MapperUtil mapperUtil;
     private final InvoiceService invoiceService;
