@@ -34,6 +34,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceProductService invoiceProductService;
     private final CompanyService companyService;
 
+
     @Override
     public InvoiceDto findById(Long id) {
         Invoice invoice = invoiceRepository.findById(id).orElseThrow(InvoiceNotFoundException::new);
