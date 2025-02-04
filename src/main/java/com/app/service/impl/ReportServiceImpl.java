@@ -21,6 +21,7 @@ public class ReportServiceImpl implements ReportService {
     private final InvoiceProductService invoiceProductService;
     private final InvoiceService invoiceService;
 
+
     @Override
     public List<InvoiceProductDto> listAllInvoiceProductsOfCompany() {
         return invoiceProductService.listAllApprovedInvoiceProductsOfCompany();
