@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class SecurityServiceImpl implements SecurityService {
 
+
     private final UserRepository userRepository;
     public final UserService userService;
 
