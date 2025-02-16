@@ -26,7 +26,6 @@ import java.util.List;
 public class InvoiceProductServiceImpl implements InvoiceProductService {
 
 
-
     private final InvoiceProductRepository invoiceProductRepository;
     private final MapperUtil mapperUtil;
     private final InvoiceService invoiceService;
@@ -192,6 +191,5 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         BigDecimal totalTax = totalPrice.multiply(BigDecimal.valueOf(invoiceProduct.getTax() / 100d));
         return totalPrice.add(totalTax);
     }
-
 
 }
